@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tables>
+    
+	<table class_path="com.keqiaokeji.dborm.test.utils.domain.QsmOption" tableName="qsm_option">
+		<column default_value="null" field_name="optionId" is_primary_key="true"/>
+		<column default_value="null" field_name="questionId" is_primary_key="false"/>
+		<column default_value="null" field_name="content" is_primary_key="false"/>
+		<column default_value="null" field_name="showOrder" is_primary_key="false"/>
+		<column default_value="null" field_name="attachmentCount" is_primary_key="false"/>
+		<column default_value="null" field_name="userId" is_primary_key="false"/>
+	</table>
+    
+    <!-- <table class_path="com.keqiaokeji.dborm.test.utils.domain.QsmInfo" tableName="qsm_info" remark="调查问卷信息表" >
+        <column field_name = "questionId" remark="关联到的问题id"/>
+        <column field_name = "content" remark="选项的内容"/>
+    	<column field_name = "userId" remark="用户ID，外键"/>
+    </table> -->
+    
+</tables>

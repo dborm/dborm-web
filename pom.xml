@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <groupId>com.keqiaokeji.dborm.web</groupId>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>dborm-web</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+
+    <name>dborm-web Maven Webapp</name>
+    <url>http://maven.apache.org</url>
+    <dependencies>
+
+        <!--测试相关的依赖开始-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
+        </dependency>
+        <!--测试相关的依赖结束-->
+
+        <!--数据库相关的依赖开始-->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.26</version>
+        </dependency>
+        <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1.2</version>
+        </dependency>
+        <dependency> <!--数据库事务-->
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.6.11</version>
+        </dependency>
+        <!--数据库相关的依赖结束-->
+
+
+    </dependencies>
+
+
+    <build>
+        <finalName>dborm-web</finalName>
+    </build>
+</project>

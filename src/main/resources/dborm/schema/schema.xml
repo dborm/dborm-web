@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tables>
+    
+    <table class_path="com.keqiaokeji.dborm.test.utils.domain.LoginUser" tableName="login_user">
+		<column default_value="null" field_name="id" is_primary_key="true"/>
+		<column default_value="null" field_name="userId" is_primary_key="true"/>
+		<column default_value="null" field_name="userName" is_primary_key="false"/>
+		<column default_value="null" field_name="age" is_primary_key="false"/>
+		<column default_value="null" field_name="isBoy" is_primary_key="false"/>
+		<column default_value="null" field_name="birthday" is_primary_key="false"/>
+		<column default_value="0" field_name="loginNum" is_primary_key="false"/>
+		<relation field_name="qsmOptionList"/>
+        <relation field_name="qsmInfoList"/>
+	</table>
+    
+</tables>
