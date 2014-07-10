@@ -1,6 +1,5 @@
 package com.keqiaokeji.dborm.schema;
 
-import com.keqiaokeji.dborm.core.Cache;
 import com.keqiaokeji.dborm.domain.ColumnBean;
 import com.keqiaokeji.dborm.domain.TableBean;
 import com.keqiaokeji.dborm.util.LogDborm;
@@ -26,20 +25,12 @@ import java.util.*;
  * @author KEQIAO KEJI
  * @time 2013-5-23下午3:25:42
  */
-public class DbormSchemaScan {
+public class DbormSchemaInit {
 
     private static String schemaPath;
 
-    public DbormSchemaScan() throws Exception {
+    public DbormSchemaInit() throws Exception {
         initSchema();
-    }
-
-    public static TableBean getTableDomain(String classPath) {
-        TableBean table = Cache.getTablesCache(classPath);
-        if (table == null) {
-            throw new RuntimeException("无法获得表信息，请使用注解或者xml描述表信息！");
-        }
-        return table;
     }
 
     /**
@@ -84,11 +75,11 @@ public class DbormSchemaScan {
             DocumentBuilder builder = factory.newDocumentBuilder();
             document = builder.parse(inputStream);
         } catch (ParserConfigurationException e) {
-            LogDborm.error(DbormSchemaScan.class.getName(), e);
+            LogDborm.error(DbormSchemaInit.class.getName(), e);
         } catch (SAXException e) {
-            LogDborm.error(DbormSchemaScan.class.getName(), e);
+            LogDborm.error(DbormSchemaInit.class.getName(), e);
         } catch (IOException e) {
-            LogDborm.error(DbormSchemaScan.class.getName(), e);
+            LogDborm.error(DbormSchemaInit.class.getName(), e);
         }
         if (document != null) {
             Element root = document.getDocumentElement();// 获得根元素
@@ -218,6 +209,6 @@ public class DbormSchemaScan {
     }
 
     public static void setSchemaPath(String schemaPath) {
-        DbormSchemaScan.schemaPath = schemaPath;
+        DbormSchemaInit.schemaPath = schemaPath;
     }
 }

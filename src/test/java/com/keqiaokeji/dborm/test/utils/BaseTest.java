@@ -1,6 +1,6 @@
 package com.keqiaokeji.dborm.test.utils;
 
-import com.keqiaokeji.dborm.annotation.DbormAnnotationScan;
+import com.keqiaokeji.dborm.annotation.DbormAnnotationInit;
 import com.keqiaokeji.dborm.core.Dborm;
 import com.keqiaokeji.dborm.test.utils.domain.LoginUser;
 import com.keqiaokeji.dborm.test.utils.domain.QsmInfo;
@@ -20,13 +20,13 @@ public class BaseTest {
         DbormContexts.showSql = true;
         try {
 
-            DbormAnnotationScan annotationUtils = new DbormAnnotationScan();
+            DbormAnnotationInit annotationUtils = new DbormAnnotationInit();
             List<String> scanPackageList = new ArrayList<String>();
             scanPackageList.add("com.keqiaokeji.dborm.test.utils");
             annotationUtils.setScanPackageList(scanPackageList);
-            annotationUtils.entityClasses.add(LoginUser.class);
-            annotationUtils.entityClasses.add(QsmInfo.class);
-            annotationUtils.entityClasses.add(QsmOption.class);
+            annotationUtils.getEntityClasses().add(LoginUser.class);
+            annotationUtils.getEntityClasses().add(QsmInfo.class);
+            annotationUtils.getEntityClasses().add(QsmOption.class);
 
             annotationUtils.initSchema();
             Dborm.setDbormDataBase(new ConnectionManager());

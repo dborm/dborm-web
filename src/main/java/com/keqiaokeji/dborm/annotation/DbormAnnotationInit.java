@@ -16,14 +16,14 @@ import java.util.Map.Entry;
  *
  * @author KEQIAO KEJI
  */
-public class DbormAnnotationScan {
+public class DbormAnnotationInit {
 
     private List<String> scanPackageList;
-    public Set<Class<?>> entityClasses = new HashSet<Class<?>>();
+    private Set<Class<?>> entityClasses = new HashSet<Class<?>>();
     private ParseEntity parseEntity;
 
 
-    public DbormAnnotationScan(){
+    public DbormAnnotationInit(){
         parseEntity = new ParseEntity();
     }
 
@@ -35,7 +35,7 @@ public class DbormAnnotationScan {
      */
     public Map<String, TableBean> initSchema() {
         Map<String, TableBean> annotationSchemas = new HashMap<String, TableBean>();
-//        Set<Class<?>> entityClasses = FileUtilsDborm.scanClassInPackages(scanPackageList);
+        entityClasses.addAll(AnnotationScan.scanClassByPackages(scanPackageList));
         if (entityClasses.size() > 0) {
             for (Class<?> entityClass : entityClasses) {
                 if (Cache.getTablesCache(entityClass.getName()) == null) {//如果缓存中不存在则使用注解初始化
@@ -108,5 +108,13 @@ public class DbormAnnotationScan {
 
     public void setScanPackageList(List<String> scanPackageList) {
         this.scanPackageList = scanPackageList;
+    }
+
+    public Set<Class<?>> getEntityClasses() {
+        return entityClasses;
+    }
+
+    public void setEntityClasses(Set<Class<?>> entityClasses) {
+        this.entityClasses = entityClasses;
     }
 }

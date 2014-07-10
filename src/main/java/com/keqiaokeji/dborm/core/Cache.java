@@ -33,7 +33,11 @@ public class Cache {
     }
 
     public static TableBean getTablesCache(String classPath) {
-        return tablesCache.get(classPath);
+        TableBean table = tablesCache.get(classPath);
+        if (table == null) {
+            throw new RuntimeException("无法获得表信息，请使用注解或者xml描述表信息！");
+        }
+        return table;
     }
 
 
