@@ -94,7 +94,7 @@ class ParseSqlPair {
     public <T> PairDborm<String, Object[]> replace(T entity) {
         Class<?> entityClass = entity.getClass();
         StringBuilder sqlContent = new StringBuilder("UPDATE ");
-        String tableName = Cache.getTablesCache(entityClass.getName()).getTableName();
+        String tableName = Cache.getTablesCache(entityClass).getTableName();
         sqlContent.append(tableName);
         sqlContent.append(" SET ");
         StringBuilder columnName = new StringBuilder();
@@ -153,7 +153,7 @@ class ParseSqlPair {
     public PairDborm<String, String[]> getEntityCount(Class<?> entityClass) {
         // 例如： SELECT COUNT(*) FROM
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM ");
-        String tableName = Cache.getTablesCache(entityClass.getName()).getTableName();
+        String tableName = Cache.getTablesCache(entityClass).getTableName();
         sql.append(tableName);
         return PairDborm.create(sql.toString(), null);
     }
@@ -163,7 +163,7 @@ class ParseSqlPair {
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM ");
         String[] bindArgs;
         Class<?> entityClass = entity.getClass();
-        String tableName = Cache.getTablesCache(entityClass.getName()).getTableName();
+        String tableName = Cache.getTablesCache(entityClass).getTableName();
         sql.append(tableName);
         sql.append(" WHERE ");
         sql.append(parseSql.parsePrimaryKeyWhere(entityClass));
@@ -197,7 +197,7 @@ class ParseSqlPair {
     private <T> List<PairDborm<String, Object[]>> getRelationFieldPair(T entity, PairType type) {
         List<PairDborm<String, Object[]>> pairList = new ArrayList<PairDborm<String, Object[]>>();
         Class<?> entityClass = entity.getClass();
-        TableBean table = Cache.getTablesCache(entityClass.getName());
+        TableBean table = Cache.getTablesCache(entityClass);
         Set<String> relations = table.getRelation();
         if (relations.size() > 0) {
             for (String fieldName : relations) {
@@ -242,7 +242,7 @@ class ParseSqlPair {
     private <T> List<PairDborm<String, Object[]>> getRelationFieldPair(T entity, PairType type, Connection conn) {
         List<PairDborm<String, Object[]>> pairList = new ArrayList<PairDborm<String, Object[]>>();
         Class<?> entityClass = entity.getClass();
-        TableBean table = Cache.getTablesCache(entityClass.getName());
+        TableBean table = Cache.getTablesCache(entityClass);
         Set<String> relations = table.getRelation();
         if (relations.size() > 0) {
             for (String fieldName : relations) {

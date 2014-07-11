@@ -30,7 +30,7 @@ public class ParseSql {
 		// 例如： INSERT INTO users(user_Id, username) VALUES (?,?) ;
 		String sql;
 		StringBuilder sqlContent = new StringBuilder("INSERT INTO ");
-		String tableName = Cache.getTablesCache(entityClass.getName()).getTableName();
+		String tableName = Cache.getTablesCache(entityClass).getTableName();
 		sqlContent.append(tableName);
 		sqlContent.append(" (");
         StringBuilder columnName = new StringBuilder();
@@ -58,7 +58,7 @@ public class ParseSql {
 		String sql;
         StringBuilder sqlContent;
         sqlContent = new StringBuilder("UPDATE ");
-        String tableName = Cache.getTablesCache(entityClass.getName()).getTableName();
+        String tableName = Cache.getTablesCache(entityClass).getTableName();
 		sqlContent.append(tableName);
 		sqlContent.append(" SET ");
 		StringBuilder columnName = new StringBuilder();
@@ -81,7 +81,7 @@ public class ParseSql {
 		// 例如： DELETE FROM users WHERE user_id=?;
 		String sql;
         StringBuilder sqlContent = new StringBuilder("DELETE FROM ");
-		String tableName = Cache.getTablesCache(entityClass.getName()).getTableName();
+		String tableName = Cache.getTablesCache(entityClass).getTableName();
 		sqlContent.append(tableName);
 		sqlContent.append(" WHERE ");
 		sqlContent.append(parsePrimaryKeyWhere(entityClass));

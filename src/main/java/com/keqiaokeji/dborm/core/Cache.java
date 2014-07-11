@@ -1,5 +1,6 @@
 package com.keqiaokeji.dborm.core;
 
+import com.keqiaokeji.dborm.annotation.AnnotationUtils;
 import com.keqiaokeji.dborm.domain.TableBean;
 
 import java.lang.reflect.Field;
@@ -32,10 +33,15 @@ public class Cache {
         tablesCache.putAll(tables);
     }
 
-    public static TableBean getTablesCache(String classPath) {
-        TableBean table = tablesCache.get(classPath);
-        if (table == null) {
-            throw new RuntimeException("无法获得表信息，请使用注解或者xml描述表信息！");
+    public static TableBean getTablesCache(Class<?> entityClass) {
+        TableBean table = tablesCache.get(entityClass.getName());
+        if (table == null) {//如果缓存中不存在则从该类的注解中解析信息，如果解析出信息则添加到缓存中，否则抛出异常
+            table = new AnnotationUtils().getTableDomain(entityClass);
+            if (table != null) {
+                putTablesCache(entityClass.getName(), table);
+            } else {
+                throw new RuntimeException("无法获得表信息，请使用注解或者xml描述表信息！");
+            }
         }
         return table;
     }

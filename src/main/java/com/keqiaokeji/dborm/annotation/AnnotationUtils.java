@@ -1,7 +1,6 @@
 package com.keqiaokeji.dborm.annotation;
 
 
-import com.keqiaokeji.dborm.core.Cache;
 import com.keqiaokeji.dborm.core.ParseEntity;
 import com.keqiaokeji.dborm.domain.ColumnBean;
 import com.keqiaokeji.dborm.domain.TableBean;
@@ -16,41 +15,22 @@ import java.util.Map.Entry;
  *
  * @author KEQIAO KEJI
  */
-public class DbormAnnotationInit {
+public class AnnotationUtils {
 
-    private List<String> scanPackageList;
-    private Set<Class<?>> entityClasses = new HashSet<Class<?>>();
     private ParseEntity parseEntity;
 
 
-    public DbormAnnotationInit(){
+    public AnnotationUtils() {
         parseEntity = new ParseEntity();
     }
 
     /**
-     * 初始化使用Annotation标注的表结构对象
+     * 通过类获得该类的注解描述信息
      *
-     * @return 初始化之后的所有结果集
-     * @author KEQIAO KEJI
+     * @param entityClass 类对象
+     * @return 注解描述信息或者null
      */
-    public Map<String, TableBean> initSchema() {
-        Map<String, TableBean> annotationSchemas = new HashMap<String, TableBean>();
-        entityClasses.addAll(AnnotationScan.scanClassByPackages(scanPackageList));
-        if (entityClasses.size() > 0) {
-            for (Class<?> entityClass : entityClasses) {
-                if (Cache.getTablesCache(entityClass.getName()) == null) {//如果缓存中不存在则使用注解初始化
-                    TableBean tableDomain = getTableDomain(entityClass);
-                    if (tableDomain != null) {// 如果没有在类名上声明Table注解则忽略该类
-                        annotationSchemas.put(entityClass.getName(), tableDomain);
-                    }
-                }
-            }
-        }
-        Cache.putAllTablesCache(annotationSchemas);
-        return annotationSchemas;
-    }
-
-    private TableBean getTableDomain(Class<?> entityClass) {
+    public TableBean getTableDomain(Class<?> entityClass) {
         TableBean tableDomain = null;
         Table tableAnnotation = entityClass.getAnnotation(Table.class);
         if (tableAnnotation != null) {
@@ -102,19 +82,5 @@ public class DbormAnnotationInit {
         return relations;
     }
 
-    public List<String> getScanPackageList() {
-        return scanPackageList;
-    }
 
-    public void setScanPackageList(List<String> scanPackageList) {
-        this.scanPackageList = scanPackageList;
-    }
-
-    public Set<Class<?>> getEntityClasses() {
-        return entityClasses;
-    }
-
-    public void setEntityClasses(Set<Class<?>> entityClasses) {
-        this.entityClasses = entityClasses;
-    }
 }

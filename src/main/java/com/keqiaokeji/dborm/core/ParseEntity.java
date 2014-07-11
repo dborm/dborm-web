@@ -1,7 +1,6 @@
 package com.keqiaokeji.dborm.core;
 
 import com.keqiaokeji.dborm.domain.ColumnBean;
-import com.keqiaokeji.dborm.schema.DbormSchemaInit;
 import com.keqiaokeji.dborm.schema.SchemaConstants;
 import com.keqiaokeji.dborm.util.ReflectUtilsDborm;
 import com.keqiaokeji.dborm.util.StringUtilsDborm;
@@ -58,7 +57,7 @@ public class ParseEntity {
         Map<String, Field> columnFields = Cache.getEntityColumnFieldsCache(entityClass.getName());
         if (columnFields == null) {// 如果缓存中不存在该对象的反射信息则需解析
             columnFields = new HashMap<String, Field>();
-            Map<String, ColumnBean> columns = Cache.getTablesCache(entityClass.getName()).getColumns();
+            Map<String, ColumnBean> columns = Cache.getTablesCache(entityClass).getColumns();
             Map<String, Field> allFields = getEntityAllFields(entityClass);
             for (Entry<String, Field> entry : allFields.entrySet()) {
                 Field field = entry.getValue();
@@ -87,7 +86,7 @@ public class ParseEntity {
         Map<String, Field> primaryKeys = Cache.getEntityPrimaryKeyFieldsCache(entityName);
         if (primaryKeys == null) {// 如果缓存中不存在该对象的反射信息则需解析
             primaryKeys = new HashMap<String, Field>();
-            Map<String, ColumnBean> columns = Cache.getTablesCache(entityName).getColumns();
+            Map<String, ColumnBean> columns = Cache.getTablesCache(entityClass).getColumns();
             Set<Entry<String, ColumnBean>> entrySet = columns.entrySet();
             for (Entry<String, ColumnBean> entry : entrySet) {
                 ColumnBean column = entry.getValue();
@@ -137,7 +136,7 @@ public class ParseEntity {
     public <T> List<Object> getColumnFiledValuesUseDefault(T entity) {
         Class<?> entityClass = entity.getClass();
         List<Object> fieldValues = new ArrayList<Object>();
-        Map<String, ColumnBean> columns = Cache.getTablesCache(entityClass.getName()).getColumns();
+        Map<String, ColumnBean> columns = Cache.getTablesCache(entityClass).getColumns();
         Map<String, Field> columnFields = getEntityColumnFields(entityClass);
         Set<Entry<String, Field>> entrySet = columnFields.entrySet();
         for (Entry<String, Field> entry : entrySet) {
