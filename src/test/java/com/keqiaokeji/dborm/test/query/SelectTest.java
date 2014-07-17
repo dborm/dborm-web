@@ -1,12 +1,12 @@
 package com.keqiaokeji.dborm.test.query;
 
 import com.keqiaokeji.dborm.core.Dborm;
-import com.keqiaokeji.dborm.core.DbormConnectionDB;
+import com.keqiaokeji.dborm.core.SQLExcuter;
 import com.keqiaokeji.dborm.test.utils.BaseTest;
 import com.keqiaokeji.dborm.test.utils.domain.LoginUser;
 import com.keqiaokeji.dborm.test.utils.domain.QsmOption;
 import com.keqiaokeji.dborm.util.DbormDataBase;
-import com.keqiaokeji.dborm.util.LogDborm;
+import com.keqiaokeji.dborm.util.LoggerUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -48,13 +48,13 @@ public class SelectTest extends BaseTest {
             qsmOptionList.add(option);
         }
         user.setQsmOptionList(qsmOptionList);
-        boolean result = Dborm.getDborm().insert(user);
+        boolean result = Dborm.insert(user);
         assertEquals(true, result);
     }
 
     @Test
     public void testB10GetEntityCount() {
-        int count = Dborm.getDborm().getEntityCount(LoginUser.class);
+        int count = Dborm.getEntityCount(LoginUser.class);
         assertEquals(1, count);
     }
 
@@ -62,7 +62,7 @@ public class SelectTest extends BaseTest {
     public void testB13GetCount() {
         String sql = "SELECT COUNT(*) FROM login_user where user_id = ? ";
         String[] selectionArgs = new String[]{USER_ID};
-        int count = Dborm.getDborm().getCount(sql, selectionArgs);
+        int count = Dborm.getCount(sql, selectionArgs);
         assertEquals(1, count);
     }
 
@@ -70,7 +70,7 @@ public class SelectTest extends BaseTest {
     public void testB15GetEntity() {
         String sql = "SELECT * FROM login_user where user_id = ? ";
         String[] bindArgs = new String[]{USER_ID};
-        LoginUser user = Dborm.getDborm().getEntitie(sql, bindArgs, LoginUser.class);
+        LoginUser user = Dborm.getEntitie(sql, bindArgs, LoginUser.class);
         assertEquals(USER_NAME, user.getUserName());
     }
 
@@ -78,7 +78,7 @@ public class SelectTest extends BaseTest {
     public void testB20GetEntitys() {
         String sql = "SELECT * FROM qsm_option where user_id = ? ";
         String[] bindArgs = new String[]{USER_ID};
-        List<QsmOption> userList = Dborm.getDborm().getEntities(sql, bindArgs, QsmOption.class);
+        List<QsmOption> userList = Dborm.getEntities(sql, bindArgs, QsmOption.class);
         assertEquals(10, userList.size());
         assertEquals(QSM_CONTENT, userList.get(2).getContent());
     }
@@ -88,14 +88,12 @@ public class SelectTest extends BaseTest {
         String sql = "SELECT id, user_name, age FROM login_user where user_id = ? ";
         String[] selectionArgs = new String[]{USER_ID};
         DbormDataBase dbormDataBase = Dborm.getDbormDataBase();
-        DbormConnectionDB connDB = null;
         Connection conn = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
         try {
-            connDB = DbormConnectionDB.getConnectionDB();
             conn = dbormDataBase.getConnection();
-            rs = connDB.getResultSet(sql, selectionArgs, conn);
+            rs = SQLExcuter.getResultSet(sql, selectionArgs, conn);
             rs.next();
             String userName = rs.getString("user_name");
             assertEquals(USER_NAME, userName);
@@ -103,7 +101,7 @@ public class SelectTest extends BaseTest {
             int age = rs.getInt(3);
             assertEquals(USER_AGE, age);
         } catch (Exception e) {
-            LogDborm.error(this.getClass().getName(), e);
+            LoggerUtils.error(this.getClass().getName(), e);
         } finally {
             try {
                 rs.close();
@@ -119,14 +117,12 @@ public class SelectTest extends BaseTest {
         String sql = "SELECT option_id, content, show_order FROM qsm_option where user_id = ? ";
         String[] selectionArgs = new String[]{USER_ID};
         DbormDataBase dbormDataBase = Dborm.getDbormDataBase();
-        DbormConnectionDB connDB = null;
         Connection conn = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
         try {
-            connDB = DbormConnectionDB.getConnectionDB();
             conn = dbormDataBase.getConnection();
-            rs = connDB.getResultSet(sql, selectionArgs, conn);
+            rs = SQLExcuter.getResultSet(sql, selectionArgs, conn);
             while (rs.next()) {
                 String content = rs.getString("content");
                 assertEquals(QSM_CONTENT, content);
@@ -134,7 +130,7 @@ public class SelectTest extends BaseTest {
                 System.out.println(showOrder);//float类型的值不能直接判断是否相等
             }
         } catch (Exception e) {
-            LogDborm.error(this.getClass().getName(), e);
+            LoggerUtils.error(this.getClass().getName(), e);
         } finally {
             try {
                 rs.close();

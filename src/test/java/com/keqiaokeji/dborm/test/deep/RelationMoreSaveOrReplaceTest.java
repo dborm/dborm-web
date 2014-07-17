@@ -41,10 +41,10 @@ public class RelationMoreSaveOrReplaceTest extends BaseTest {
         }
         user.setQsmInfoList(null);
         //DbormDeep.getDborm().insert(user);
-        boolean result = Dborm.getDborm().saveOrReplace(user);
+        boolean result = Dborm.saveOrReplace(user);
         assertEquals(true, result);
-        assertEquals(10, Dborm.getDborm().getEntityCount(QsmOption.class));
-        assertEquals(0, Dborm.getDborm().getEntityCount(QsmInfo.class));
+        assertEquals(10, Dborm.getEntityCount(QsmOption.class));
+        assertEquals(0, Dborm.getEntityCount(QsmInfo.class));
 
     }
 

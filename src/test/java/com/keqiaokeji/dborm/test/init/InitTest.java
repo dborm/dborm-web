@@ -49,9 +49,9 @@ public class InitTest {
         user.setUserName("Tom");
         user.setAge(10);
         user.setBirthday(new Date());
-        boolean ins = Dborm.getDborm().insert(user);
+        boolean ins = Dborm.insert(user);
         assertEquals(true, ins);
-        LoginUser user1 = Dborm.getDborm().getEntitie("select * from login_user", null, LoginUser.class);
+        LoginUser user1 = Dborm.getEntitie("select * from login_user", null, LoginUser.class);
         boolean result = true;
         if (user1 == null) {
             result = false;
@@ -62,7 +62,7 @@ public class InitTest {
 
     @AfterClass
     public static void deleteDb() {
-        boolean del = Dborm.getDborm().execSql("delete from login_user");
+        boolean del = Dborm.execSql("delete from login_user");
         assertEquals(true, del);
     }
 

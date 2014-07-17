@@ -32,7 +32,7 @@ public class RelationFieldTest extends BaseTest {
             optionList.add(option);
         }
         user.setQsmOptionList(optionList);
-        boolean result = Dborm.getDborm().insert(user);
+        boolean result = Dborm.insert(user);
         assertEquals(true, result);
     }
 
@@ -53,7 +53,7 @@ public class RelationFieldTest extends BaseTest {
             optionList.add(option);
         }
         user.setQsmOptionList(optionList);
-        boolean result = Dborm.getDborm().update(user);
+        boolean result = Dborm.update(user);
         assertEquals(true, result);
 
     }
@@ -74,7 +74,7 @@ public class RelationFieldTest extends BaseTest {
             optionList.add(option);
         }
         user.setQsmOptionList(optionList);
-        boolean result = Dborm.getDborm().replace(user);
+        boolean result = Dborm.replace(user);
         assertEquals(true, result);
 
     }
@@ -95,7 +95,7 @@ public class RelationFieldTest extends BaseTest {
             optionList.add(option);
         }
         user.setQsmOptionList(optionList);
-        boolean result = Dborm.getDborm().delete(user);
+        boolean result = Dborm.delete(user);
         assertEquals(true, result);
     }
 

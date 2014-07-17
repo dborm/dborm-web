@@ -76,11 +76,11 @@ public class BaseTest {
 
 
     public static void cleanTable() {
-        boolean delLogin = Dborm.getDborm().execSql("delete from login_user");
+        boolean delLogin = Dborm.execSql("delete from login_user");
         assertEquals(true, delLogin);
-        boolean delOption = Dborm.getDborm().execSql("delete from qsm_option");
+        boolean delOption = Dborm.execSql("delete from qsm_option");
         assertEquals(true, delOption);
-        boolean delInfo = Dborm.getDborm().execSql("delete from qsm_info");
+        boolean delInfo = Dborm.execSql("delete from qsm_info");
         assertEquals(true, delInfo);
     }
 

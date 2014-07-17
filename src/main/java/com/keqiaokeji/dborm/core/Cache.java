@@ -61,8 +61,13 @@ public class Cache {
         entityAllFieldsCache.put(classPath, allFiles);
     }
 
-    public static Map<String, Field> getEntityAllFieldsCache(String classPath) {
-        return entityAllFieldsCache.get(classPath);
+    public static Map<String, Field> getEntityAllFieldsCache(Class<?> entityClass) {
+        Map<String, Field> allFields = entityAllFieldsCache.get(entityClass.getName());
+        if (allFields == null) {// 如果缓存中不存在该对象的反射信息则需解析
+            allFields = EntityResolver.getEntityAllFields(entityClass);
+            Cache.putEntityAllFieldsCache(entityClass.getName(), allFields);
+        }
+        return allFields;
     }
 
     /**
@@ -79,8 +84,13 @@ public class Cache {
         entityColumnFieldsCache.put(classPath, columnFields);
     }
 
-    public static Map<String, Field> getEntityColumnFieldsCache(String classPath) {
-        return entityColumnFieldsCache.get(classPath);
+    public static Map<String, Field> getEntityColumnFieldsCache(Class<?> entityClass) {
+        Map<String, Field> columnFields = entityColumnFieldsCache.get(entityClass.getName());
+        if (columnFields == null) {// 如果缓存中不存在该对象的反射信息则需解析
+            columnFields = EntityResolver.getEntityColumnFields(entityClass);
+            Cache.putEntityColumnFieldsCache(entityClass.getName(), columnFields);
+        }
+        return columnFields;
     }
 
     /**
@@ -97,8 +107,13 @@ public class Cache {
         entityPrimaryKeyFieldsCache.put(classPath, primaryKeyFiles);
     }
 
-    public static Map<String, Field> getEntityPrimaryKeyFieldsCache(String classPath) {
-        return entityPrimaryKeyFieldsCache.get(classPath);
+    public static Map<String, Field> getEntityPrimaryKeyFieldsCache(Class<?> entityClass) {
+        Map<String, Field> primaryKeys = entityPrimaryKeyFieldsCache.get(entityClass.getName());
+        if (primaryKeys == null) {// 如果缓存中不存在该对象的反射信息则需解析
+            primaryKeys = EntityResolver.getEntityPrimaryKeyFields(entityClass);
+            Cache.putEntityPrimaryKeyFieldsCache(entityClass.getName(), primaryKeys);
+        }
+        return primaryKeys;
     }
 
     /**
@@ -117,7 +132,6 @@ public class Cache {
     public static String getSqlCache(String classPathSql) {
         return sqlCache.get(classPathSql);
     }
-
 
     public static ConcurrentHashMap<String, TableBean> getTablesCache() {
         return tablesCache;

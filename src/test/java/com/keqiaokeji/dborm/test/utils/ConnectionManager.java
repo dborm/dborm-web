@@ -1,7 +1,7 @@
 package com.keqiaokeji.dborm.test.utils;
 
 import com.keqiaokeji.dborm.util.DbormDataBase;
-import com.keqiaokeji.dborm.util.LogDborm;
+import com.keqiaokeji.dborm.util.LoggerUtils;
 
 import java.sql.*;
 
@@ -36,8 +36,15 @@ public class ConnectionManager extends DbormDataBase {
             Class.forName(driver);// 加载驱动程序
             conn = DriverManager.getConnection(url, username, password);// 连续数据库
         } catch (Exception e) {
-            LogDborm.error(e);
+            LoggerUtils.error(e);
         }
+
         return conn;
+    }
+
+    @Override
+    public <T> T beforeInsert(T entity) {
+
+        return super.beforeInsert(entity);
     }
 }

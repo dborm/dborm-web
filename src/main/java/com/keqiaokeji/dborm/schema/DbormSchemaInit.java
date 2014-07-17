@@ -2,7 +2,7 @@ package com.keqiaokeji.dborm.schema;
 
 import com.keqiaokeji.dborm.domain.ColumnBean;
 import com.keqiaokeji.dborm.domain.TableBean;
-import com.keqiaokeji.dborm.util.LogDborm;
+import com.keqiaokeji.dborm.util.LoggerUtils;
 import com.keqiaokeji.dborm.util.StringUtilsDborm;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -27,11 +27,7 @@ import java.util.*;
  */
 public class DbormSchemaInit {
 
-    private static String schemaPath;
-
-    public DbormSchemaInit() throws Exception {
-        initSchema();
-    }
+    private String schemaPath;
 
     /**
      * 初始化表结构
@@ -75,11 +71,11 @@ public class DbormSchemaInit {
             DocumentBuilder builder = factory.newDocumentBuilder();
             document = builder.parse(inputStream);
         } catch (ParserConfigurationException e) {
-            LogDborm.error(DbormSchemaInit.class.getName(), e);
+            LoggerUtils.error(DbormSchemaInit.class.getName(), e);
         } catch (SAXException e) {
-            LogDborm.error(DbormSchemaInit.class.getName(), e);
+            LoggerUtils.error(DbormSchemaInit.class.getName(), e);
         } catch (IOException e) {
-            LogDborm.error(DbormSchemaInit.class.getName(), e);
+            LoggerUtils.error(DbormSchemaInit.class.getName(), e);
         }
         if (document != null) {
             Element root = document.getDocumentElement();// 获得根元素
@@ -95,8 +91,8 @@ public class DbormSchemaInit {
                 TableBean tableDomain = new TableBean();
                 tableDomain.setClassPath(classPath);
                 tableDomain.setTableName(name);
-                tableDomain.setColumns(getColumnDomain(tableDomain, table));
-                tableDomain.setRelation(getRelation(tableDomain, table));
+                tableDomain.setColumns(getColumnDomains(tableDomain, table));
+                tableDomain.setRelation(getRelations(tableDomain, table));
                 tables.put(classPath, tableDomain);
             }
         }
@@ -112,7 +108,7 @@ public class DbormSchemaInit {
      * @author KEQIAO KEJI
      * @time 2013-5-23下午3:27:02
      */
-    private Map<String, ColumnBean> getColumnDomain(TableBean tableDomain, Element table) {
+    private Map<String, ColumnBean> getColumnDomains(TableBean tableDomain, Element table) {
         Map<String, ColumnBean> fieldList = tableDomain.getColumns();
         NodeList columnList = table.getElementsByTagName(SchemaConstants.COLUMN);
         for (int j = 0; j < columnList.getLength(); j++) {
@@ -128,7 +124,7 @@ public class DbormSchemaInit {
         return fieldList;
     }
 
-    private Set<String> getRelation(TableBean tableDomain, Element table) {
+    private Set<String> getRelations(TableBean tableDomain, Element table) {
         Set<String> relations = tableDomain.getRelation();
         NodeList relationList = table.getElementsByTagName(SchemaConstants.RELATION);
         for (int j = 0; j < relationList.getLength(); j++) {
@@ -204,11 +200,11 @@ public class DbormSchemaInit {
         return null;
     }
 
-    public static String getSchemaPath() {
+    public String getSchemaPath() {
         return schemaPath;
     }
 
-    public static void setSchemaPath(String schemaPath) {
-        DbormSchemaInit.schemaPath = schemaPath;
+    public void setSchemaPath(String schemaPath) {
+        this.schemaPath = schemaPath;
     }
 }

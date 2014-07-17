@@ -14,28 +14,7 @@ import java.util.List;
  * @author KEQIAO KEJI
  * @time 2013-5-6上午10:40:40
  */
-public class DbormConnectionDB {
-
-    private static DbormConnectionDB connectionDB;
-
-    public DbormConnectionDB() {
-    }
-
-    /**
-     * 获得ConnectionDB实例，单例模式
-     *
-     * @return ConnectionDB实例
-     * @author KEQIAO KEJI
-     * @time 2013-5-23下午6:52:36
-     */
-    public static synchronized DbormConnectionDB getConnectionDB() {
-        if (connectionDB == null) {
-            connectionDB = new DbormConnectionDB();
-        }
-        return connectionDB;
-    }
-
-
+public class SQLExcuter {
 
     /**
      * 执行SQL(并作SQL检查及输出)
@@ -47,7 +26,7 @@ public class DbormConnectionDB {
      * @author KEQIAO KEJI
      * @time 2013-6-7下午2:54:48
      */
-    public void execSQL(String sql, Object[] bindArgs, Connection conn) throws SQLException {
+    public static void execSQL(String sql, Object[] bindArgs, Connection conn) throws SQLException {
         checkSql(sql, bindArgs);
         PreparedStatement pst = null;
         try {
@@ -74,7 +53,7 @@ public class DbormConnectionDB {
      * @author KEQIAO KEJI
      * @time 2013-5-6上午10:41:26
      */
-    public void execSQLUseTransaction(List<PairDborm<String, Object[]>> execSqlPairList, Connection conn) throws SQLException {
+    public static void execSQLUseTransaction(List<PairDborm<String, Object[]>> execSqlPairList, Connection conn) throws SQLException {
         PreparedStatement pst = null;
         try {
             conn.setAutoCommit(false);
@@ -110,7 +89,7 @@ public class DbormConnectionDB {
      * @author KEQIAO KEJI
      * @time 2013-5-6上午10:43:44
      */
-    public ResultSet getResultSet(String sql, String[] bindArgs, Connection conn) throws SQLException {
+    public static ResultSet getResultSet(String sql, Object[] bindArgs, Connection conn) throws SQLException {
         ResultSet result;
         checkSql(sql, bindArgs);
         PreparedStatement pst = conn.prepareStatement(sql);
@@ -132,7 +111,7 @@ public class DbormConnectionDB {
      * @author KEQIAO KEJI
      * @time 2013-5-7上午10:55:38
      */
-    private void checkSql(String sql, Object[] bindArgs) {
+    private static void checkSql(String sql, Object[] bindArgs) {
         if (StringUtilsDborm.isNotBlank(sql)) {
             if (DbormContexts.showSql) {
                 StringBuilder sqlContent = new StringBuilder("运行的SQL语句如下：\n");
@@ -147,7 +126,7 @@ public class DbormConnectionDB {
                         }
                     }
                 }
-                LogDborm.debug(DbormConnectionDB.class.getName(), sqlContent.toString());
+                LoggerUtils.debug(sqlContent.toString());
             }
         } else {
             throw new IllegalArgumentException("需要执行的SQL语句不能为空!");

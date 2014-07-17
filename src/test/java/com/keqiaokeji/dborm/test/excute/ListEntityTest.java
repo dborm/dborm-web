@@ -35,7 +35,7 @@ public class ListEntityTest extends BaseTest {
             user.setBirthday(new Date());
             userList.add(user);
         }
-        boolean result = Dborm.getDborm().insert(userList);
+        boolean result = Dborm.insert(userList);
         assertEquals(true, result);
     }
 
@@ -49,7 +49,7 @@ public class ListEntityTest extends BaseTest {
             user.setUserName("TomReplaceToLucy");
             userList.add(user);
         }
-        boolean result = Dborm.getDborm().replace(userList);
+        boolean result = Dborm.replace(userList);
         assertEquals(true, result);
     }
 
@@ -64,7 +64,7 @@ public class ListEntityTest extends BaseTest {
             user.setBirthday(new Date());
             userList.add(user);
         }
-        boolean result = Dborm.getDborm().update(userList);
+        boolean result = Dborm.update(userList);
         assertEquals(true, result);
     }
 
@@ -77,7 +77,7 @@ public class ListEntityTest extends BaseTest {
             user.setUserId("userId" + i);
             userList.add(user);
         }
-        boolean result = Dborm.getDborm().delete(userList);
+        boolean result = Dborm.delete(userList);
         assertEquals(true, result);
     }
 

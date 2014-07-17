@@ -42,7 +42,7 @@ public class SelectRelationTest extends BaseTest {
         }
         user.setQsmOptionList(qsmOptionList);
 
-        boolean result = Dborm.getDborm().insert(user);
+        boolean result = Dborm.insert(user);
         assertEquals(true, result);
     }
 
@@ -57,7 +57,7 @@ public class SelectRelationTest extends BaseTest {
         String sql = "SELECT u.*, q.question_id, q.content FROM qsm_option q LEFT JOIN login_user u ON u.user_id=q.user_id WHERE u.user_id = ? ";
         String[] bindArgs = new String[]{USER_ID};
         // LoginUser对象里面一定要有questionId和content属性
-        List<LoginUser> userList = Dborm.getDborm().getEntities(sql, bindArgs, LoginUser.class);
+        List<LoginUser> userList = Dborm.getEntities(sql, bindArgs, LoginUser.class);
         for (int i = 0; i < bindArgs.length; i++) {
             LoginUser user = userList.get(i);
             assertEquals(USER_NAME, user.getUserName());
@@ -69,7 +69,7 @@ public class SelectRelationTest extends BaseTest {
     public void testB28GetJoinEntitys() {
         String sql = "SELECT * FROM qsm_option q LEFT JOIN login_user u ON u.user_id=q.user_id WHERE u.user_id = ? ";
         String[] bindArgs = new String[]{USER_ID};
-        List<Map<String, Object>> entityList = Dborm.getDborm().getEntities(sql, bindArgs, new Class<?>[]{LoginUser.class, QsmOption.class});
+        List<Map<String, Object>> entityList = Dborm.getEntities(sql, bindArgs, new Class<?>[]{LoginUser.class, QsmOption.class});
         for (int i = 0; i < bindArgs.length; i++) {
             Map<String, Object> entityTeam = entityList.get(i);
             LoginUser user = (LoginUser) entityTeam.get(LoginUser.class.getName());

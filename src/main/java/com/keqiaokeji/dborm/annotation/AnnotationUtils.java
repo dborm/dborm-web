@@ -1,14 +1,17 @@
 package com.keqiaokeji.dborm.annotation;
 
 
-import com.keqiaokeji.dborm.core.ParseEntity;
+import com.keqiaokeji.dborm.core.EntityResolver;
 import com.keqiaokeji.dborm.domain.ColumnBean;
 import com.keqiaokeji.dborm.domain.TableBean;
 import com.keqiaokeji.dborm.util.StringUtilsDborm;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * 支持使用Annotation标注表结构
@@ -16,13 +19,6 @@ import java.util.Map.Entry;
  * @author KEQIAO KEJI
  */
 public class AnnotationUtils {
-
-    private ParseEntity parseEntity;
-
-
-    public AnnotationUtils() {
-        parseEntity = new ParseEntity();
-    }
 
     /**
      * 通过类获得该类的注解描述信息
@@ -48,7 +44,7 @@ public class AnnotationUtils {
 
     private Map<String, ColumnBean> getColumnDomains(Class<?> entityClass) {
         Map<String, ColumnBean> columns = new HashMap<String, ColumnBean>();
-        Map<String, Field> allFields = parseEntity.getEntityAllFields(entityClass);
+        Map<String, Field> allFields = EntityResolver.getEntityAllFields(entityClass);//此处不能从Cache类的缓存里取数据，否则会出现死循环
         for (Entry<String, Field> entry : allFields.entrySet()) {
             Field field = entry.getValue();
             Column columnAnnotation = field.getAnnotation(Column.class);
@@ -61,17 +57,17 @@ public class AnnotationUtils {
         return columns;
     }
 
-    private ColumnBean getColumnDomain(Field field, Column anno) {
+    private ColumnBean getColumnDomain(Field field, Column column) {
         ColumnBean columnDomain = new ColumnBean();
         columnDomain.setFieldName(field.getName());
-        columnDomain.setPrimaryKey(anno.isPrimaryKey());
-        columnDomain.setDefaultValue(anno.defaultValue());
+        columnDomain.setPrimaryKey(column.isPrimaryKey());
+        columnDomain.setDefaultValue(column.defaultValue());
         return columnDomain;
     }
 
     private Set<String> getRelation(Class<?> entityClass) {
         Set<String> relations = new HashSet<String>();
-        Map<String, Field> allFields = parseEntity.getEntityAllFields(entityClass);
+        Map<String, Field> allFields =  EntityResolver.getEntityAllFields(entityClass);//此处不能从Cache类的缓存里取数据，否则会出现死循环
         for (Entry<String, Field> entry : allFields.entrySet()) {
             Field field = entry.getValue();
             Relation relation = field.getAnnotation(Relation.class);

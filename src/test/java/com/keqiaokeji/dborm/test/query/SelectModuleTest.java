@@ -49,7 +49,7 @@ public class SelectModuleTest extends BaseTest {
         }
         user.setQsmOptionList(qsmOptionList);
 
-        boolean result = Dborm.getDborm().insert(user);
+        boolean result = Dborm.insert(user);
         assertEquals(true, result);
     }
 
@@ -63,7 +63,7 @@ public class SelectModuleTest extends BaseTest {
     public void testB25GetJoinEntitys() {
         String sql = "SELECT u.user_id, u.user_name, q.question_id, q.content, q.show_order FROM qsm_option q LEFT JOIN login_user u ON u.user_id=q.user_id WHERE u.user_id = ? ";
         String[] bindArgs = new String[]{USER_ID};
-        List<SelectModule> moduleList = Dborm.getDborm().getEntities(sql, bindArgs, SelectModule.class);
+        List<SelectModule> moduleList = Dborm.getEntities(sql, bindArgs, SelectModule.class);
         for (int i = 0; i < bindArgs.length; i++) {
             SelectModule module = moduleList.get(i);
             assertEquals(USER_NAME, module.getUserName());
@@ -75,7 +75,7 @@ public class SelectModuleTest extends BaseTest {
     public void testB28GetJoinEntitys() {
         String sql = "SELECT * FROM qsm_option q LEFT JOIN login_user u ON u.user_id=q.user_id WHERE u.user_id = ? ";
         String[] bindArgs = new String[]{USER_ID};
-        List<SelectModule> moduleList = Dborm.getDborm().getEntities(sql, bindArgs, SelectModule.class);
+        List<SelectModule> moduleList = Dborm.getEntities(sql, bindArgs, SelectModule.class);
         for (int i = 0; i < bindArgs.length; i++) {
             SelectModule module = moduleList.get(i);
             assertEquals(USER_NAME, module.getUserName());

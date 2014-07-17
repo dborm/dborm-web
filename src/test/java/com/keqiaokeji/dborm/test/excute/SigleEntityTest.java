@@ -22,7 +22,7 @@ public class SigleEntityTest extends BaseTest {
         user.setUserName("Tom");
         user.setAge(10);
         user.setBirthday(new Date());
-        boolean result = Dborm.getDborm().insert(user);
+        boolean result = Dborm.insert(user);
         assertEquals(true, result);
     }
 
@@ -32,7 +32,7 @@ public class SigleEntityTest extends BaseTest {
         user.setId("ID1");
         user.setUserId("USID1");
         user.setUserName("TomReplace");
-        boolean result = Dborm.getDborm().replace(user);
+        boolean result = Dborm.replace(user);
         assertEquals(true, result);
     }
 
@@ -44,7 +44,7 @@ public class SigleEntityTest extends BaseTest {
         user.setUserName("TomUpdate");
         user.setAge(10);
         user.setBirthday(new Date());
-        boolean result = Dborm.getDborm().update(user);
+        boolean result = Dborm.update(user);
         assertEquals(true, result);
     }
 
@@ -54,7 +54,7 @@ public class SigleEntityTest extends BaseTest {
         user.setId("ID2");
         user.setUserId("USID2");
         user.setUserName("Tom");
-        boolean result = Dborm.getDborm().saveOrUpdate(user);
+        boolean result = Dborm.saveOrUpdate(user);
         assertEquals(true, result);
     }
 
@@ -64,7 +64,7 @@ public class SigleEntityTest extends BaseTest {
         user.setId("ID2");
         user.setUserId("USID2");
         user.setUserName("TomSaveOrUpdate");
-        boolean result = Dborm.getDborm().saveOrUpdate(user);
+        boolean result = Dborm.saveOrUpdate(user);
         assertEquals(true, result);
     }
 
@@ -74,7 +74,7 @@ public class SigleEntityTest extends BaseTest {
         user.setId("ID2");
         user.setUserId("USID2");
         user.setAge(10);
-        boolean result = Dborm.getDborm().saveOrReplace(user);
+        boolean result = Dborm.saveOrReplace(user);
         assertEquals(true, result);
     }
 
@@ -83,7 +83,7 @@ public class SigleEntityTest extends BaseTest {
         LoginUser user = new LoginUser();
         user.setId("ID1");
         user.setUserId("USID1");
-        boolean result = Dborm.getDborm().delete(user);
+        boolean result = Dborm.delete(user);
         assertEquals(true, result);
     }
 

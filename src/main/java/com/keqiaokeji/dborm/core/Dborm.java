@@ -1,7 +1,7 @@
 package com.keqiaokeji.dborm.core;
 
 import com.keqiaokeji.dborm.util.DbormDataBase;
-import com.keqiaokeji.dborm.util.LogDborm;
+import com.keqiaokeji.dborm.util.LoggerUtils;
 import com.keqiaokeji.dborm.util.PairDborm;
 import com.keqiaokeji.dborm.util.StringUtilsDborm;
 
@@ -22,30 +22,10 @@ import java.util.Map;
  */
 public class Dborm {
 
-    private DbormConnectionDB connectionDB;
-    private ParseSqlPair parseSqlPair;
-
     private static DbormDataBase dbormDataBase;
-    private static Dborm dborm;
+//    private DataSource dataSource;
 
-    /**
-     * 获得Dborm实例（单例模式）
-     *
-     * @return Dborm实例
-     * @author KEQIAO KEJI
-     * @time 2013-5-13上午10:09:39
-     */
-    public static synchronized Dborm getDborm() {
-        if (dborm == null) {
-            dborm = new Dborm();
-        }
-        return dborm;
-    }
 
-    public Dborm() {
-        parseSqlPair = new ParseSqlPair();
-        connectionDB = new DbormConnectionDB();
-    }
 
     /**
      * 新增实体（自动添加事务）
@@ -55,7 +35,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-5上午10:29:57
      */
-    public <T> boolean insert(T entity) {
+    public static <T> boolean insert(T entity) {
         return insert(entityToEntityList(entity));
     }
 
@@ -68,7 +48,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-5上午10:30:15
      */
-    public <T> boolean insert(List<T> entitys) {
+    public static <T> boolean insert(List<T> entitys) {
         boolean result = false;
         if (entitys != null && entitys.size() > 0) {
             Connection conn = getConnection();
@@ -76,12 +56,12 @@ public class Dborm {
                 try {
                     List<PairDborm<String, Object[]>> pairList = new ArrayList<PairDborm<String, Object[]>>();
                     for (T entity : entitys) {
-                        pairList.addAll(parseSqlPair.insertDeep(entity));
+                        pairList.addAll(SQLPairFactory.insertDeep(entity));
                     }
-                    connectionDB.execSQLUseTransaction(pairList, conn);
+                    SQLExcuter.execSQLUseTransaction(pairList, conn);
                     result = true;
                 } catch (Exception e) {
-                    LogDborm.error(e);
+                    LoggerUtils.error(e);
                 } finally {
                     dbormDataBase.closeConn(conn);
                 }
@@ -98,7 +78,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-5上午10:39:58
      */
-    public <T> boolean update(T entity) {
+    public static <T> boolean update(T entity) {
         return update(entityToEntityList(entity));
     }
 
@@ -110,7 +90,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-5上午10:40:14
      */
-    public <T> boolean update(List<T> entitys) {
+    public static <T> boolean update(List<T> entitys) {
         boolean result = false;
         if (entitys != null && entitys.size() > 0) {
             Connection conn = getConnection();
@@ -118,12 +98,12 @@ public class Dborm {
                 try {
                     List<PairDborm<String, Object[]>> pairList = new ArrayList<PairDborm<String, Object[]>>();
                     for (T entity : entitys) {
-                        pairList.addAll(parseSqlPair.updateDeep(entity));
+                        pairList.addAll(SQLPairFactory.updateDeep(entity));
                     }
-                    connectionDB.execSQLUseTransaction(pairList, conn);
+                    SQLExcuter.execSQLUseTransaction(pairList, conn);
                     result = true;
                 } catch (Exception e) {
-                    LogDborm.error(e);
+                    LoggerUtils.error(e);
                 } finally {
                     dbormDataBase.closeConn(conn);
                 }
@@ -140,7 +120,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-5上午10:40:31
      */
-    public <T> boolean delete(T entity) {
+    public static <T> boolean delete(T entity) {
         return delete(entityToEntityList(entity));
     }
 
@@ -152,7 +132,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-5上午10:41:09
      */
-    public <T> boolean delete(List<T> entitys) {
+    public static <T> boolean delete(List<T> entitys) {
         boolean result = false;
         if (entitys != null && entitys.size() > 0) {
             Connection conn = getConnection();
@@ -160,12 +140,12 @@ public class Dborm {
                 try {
                     List<PairDborm<String, Object[]>> pairList = new ArrayList<PairDborm<String, Object[]>>();
                     for (T entity : entitys) {
-                        pairList.addAll(parseSqlPair.deleteDeep(entity));
+                        pairList.addAll(SQLPairFactory.deleteDeep(entity));
                     }
-                    connectionDB.execSQLUseTransaction(pairList, conn);
+                    SQLExcuter.execSQLUseTransaction(pairList, conn);
                     result = true;
                 } catch (Exception e) {
-                    LogDborm.error(e);
+                    LoggerUtils.error(e);
                 } finally {
                     dbormDataBase.closeConn(conn);
                 }
@@ -182,7 +162,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-5上午10:44:02
      */
-    public <T> boolean replace(T entity) {
+    public static <T> boolean replace(T entity) {
         return replace(entityToEntityList(entity));
     }
 
@@ -194,7 +174,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-5上午10:47:17
      */
-    public <T> boolean replace(List<T> entitys) {
+    public static <T> boolean replace(List<T> entitys) {
         boolean result = false;
         if (entitys != null && entitys.size() > 0) {
             Connection conn = getConnection();
@@ -202,12 +182,12 @@ public class Dborm {
                 try {
                     List<PairDborm<String, Object[]>> pairList = new ArrayList<PairDborm<String, Object[]>>();
                     for (T entity : entitys) {
-                        pairList.addAll(parseSqlPair.replaceDeep(entity));
+                        pairList.addAll(SQLPairFactory.replaceDeep(entity));
                     }
-                    connectionDB.execSQLUseTransaction(pairList, conn);
+                    SQLExcuter.execSQLUseTransaction(pairList, conn);
                     result = true;
                 } catch (Exception e) {
-                    LogDborm.error(e);
+                    LoggerUtils.error(e);
                 } finally {
                     dbormDataBase.closeConn(conn);
                 }
@@ -224,7 +204,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-6下午3:22:18
      */
-    public <T> boolean saveOrReplace(T entity) {
+    public static <T> boolean saveOrReplace(T entity) {
         return saveOrReplace(entityToEntityList(entity));
     }
 
@@ -236,7 +216,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-6下午3:22:59
      */
-    public <T> boolean saveOrReplace(List<T> entitys) {
+    public static <T> boolean saveOrReplace(List<T> entitys) {
         boolean result = false;
         if (entitys != null && entitys.size() > 0) {
             Connection conn = getConnection();
@@ -244,12 +224,12 @@ public class Dborm {
                 try {
                     List<PairDborm<String, Object[]>> pairList = new ArrayList<PairDborm<String, Object[]>>();
                     for (T entity : entitys) {
-                        pairList.addAll(parseSqlPair.saveOrReplaceDeep(entity, conn));
+                        pairList.addAll(SQLPairFactory.saveOrReplaceDeep(entity, conn));
                     }
-                    connectionDB.execSQLUseTransaction(pairList, conn);
+                    SQLExcuter.execSQLUseTransaction(pairList, conn);
                     result = true;
                 } catch (Exception e) {
-                    LogDborm.error(e);
+                    LoggerUtils.error(e);
                 } finally {
                     dbormDataBase.closeConn(conn);
                 }
@@ -266,7 +246,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-6下午3:23:22
      */
-    public <T> boolean saveOrUpdate(T entity) {
+    public static <T> boolean saveOrUpdate(T entity) {
         return saveOrUpdate(entityToEntityList(entity));
     }
 
@@ -278,7 +258,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-6下午3:23:22
      */
-    public <T> boolean saveOrUpdate(List<T> entitys) {
+    public static <T> boolean saveOrUpdate(List<T> entitys) {
         boolean result = false;
         if (entitys != null && entitys.size() > 0) {
             Connection conn = getConnection();
@@ -286,12 +266,12 @@ public class Dborm {
                 try {
                     List<PairDborm<String, Object[]>> pairList = new ArrayList<PairDborm<String, Object[]>>();
                     for (T entity : entitys) {
-                        pairList.addAll(parseSqlPair.saveOrUpdateDeep(entity, conn));
+                        pairList.addAll(SQLPairFactory.saveOrUpdateDeep(entity, conn));
                     }
-                    connectionDB.execSQLUseTransaction(pairList, conn);
+                    SQLExcuter.execSQLUseTransaction(pairList, conn);
                     result = true;
                 } catch (Exception e) {
-                    LogDborm.error(e);
+                    LoggerUtils.error(e);
                 } finally {
                     dbormDataBase.closeConn(conn);
                 }
@@ -311,14 +291,14 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-6上午11:23:46
      */
-    public <T> T getEntitie(String sql, String[] bindArgs, Class<?> entityClass) {
+    public static <T> T getEntitie(String sql, String[] bindArgs, Class<?> entityClass) {
         T result = null;
         Connection conn = getConnection();
         if (conn != null) {
             try {
                 result = getEntitie(sql, bindArgs, entityClass, conn);
             } catch (Exception e) {
-                LogDborm.error(e);
+                LoggerUtils.error(e);
             } finally {
                 dbormDataBase.closeConn(conn);
             }
@@ -337,7 +317,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-6上午11:23:46
      */
-    public <T> T getEntitie(String sql, String[] bindArgs, Class<?> entityClass, Connection conn) {
+    public static <T> T getEntitie(String sql, String[] bindArgs, Class<?> entityClass, Connection conn) {
         if (StringUtilsDborm.isNotBlank(sql) && entityClass != null && conn != null) {
             try {
                 List<T> entityList = getEntities(sql, bindArgs, entityClass, conn);
@@ -345,7 +325,7 @@ public class Dborm {
                     return entityList.get(0);
                 }
             } catch (Exception e) {
-                LogDborm.error(e);
+                LoggerUtils.error(e);
             }
         }
         return null;
@@ -361,20 +341,28 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-6上午11:23:46
      */
-    public <T> List<T> getEntities(String sql, String[] bindArgs, Class<?> entityClass) {
+    public static <T> List<T> getEntities(String sql, String[] bindArgs, Class<?> entityClass) {
         List<T> results = new ArrayList<T>();
         Connection conn = getConnection();
         if (conn != null) {
             try {
                 results = getEntities(sql, bindArgs, entityClass, conn);
             } catch (Exception e) {
-                LogDborm.error(e);
+                LoggerUtils.error(e);
             } finally {
                 dbormDataBase.closeConn(conn);
             }
         }
         return results;
     }
+
+//    interface    ResultMapper<T> {
+//        <T> T map(ResultSet rs);
+//    }
+//
+//    public <T> List<T> getEntities(String sql, String[] bindArgs, Class<?> entityClass,ResultMapper<T> mapper){
+//
+//    }
 
     /**
      * 根据查询语句返回实体集合
@@ -387,22 +375,21 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-6上午11:23:46
      */
-    public <T> List<T> getEntities(String sql, String[] bindArgs, Class<?> entityClass, Connection conn) {
+    public static <T> List<T> getEntities(String sql, String[] bindArgs, Class<?> entityClass, Connection conn) {
         List<T> results = new ArrayList<T>();
         if (StringUtilsDborm.isNotBlank(sql) && entityClass != null && conn != null) {
-            DbormConnectionDB connDB = DbormConnectionDB.getConnectionDB();
             ResultSet rs = null;
             try {
-                rs = connDB.getResultSet(sql, bindArgs, conn);
+                rs = SQLExcuter.getResultSet(sql, bindArgs, conn);
                 if (rs != null) {
                     String[] columnNames = getColumnNames(rs);
                     while (rs.next()) {
-                        Object entity = parseSqlPair.getEntitys(entityClass, rs, columnNames);
+                        Object entity = EntityResolver.getEntitys(entityClass, rs, columnNames);
                         results.add((T) entity);
                     }
                 }
             } catch (Exception e) {
-                LogDborm.error(e);
+                LoggerUtils.error(e);
             } finally {
                 closeRs(rs);
             }
@@ -420,27 +407,27 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-6-7上午10:42:18
      */
-    public List<Map<String, Object>> getEntities(String sql, String[] bindArgs, Class<?>[] entityClasses) {
+    public static List<Map<String, Object>> getEntities(String sql, String[] bindArgs, Class<?>[] entityClasses) {
         List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
         if (StringUtilsDborm.isNotBlank(sql) && entityClasses != null && entityClasses.length > 0) {
             Connection conn = getConnection();
             if (conn != null) {
                 ResultSet rs = null;
                 try {
-                    rs = connectionDB.getResultSet(sql, bindArgs, conn);
+                    rs = SQLExcuter.getResultSet(sql, bindArgs, conn);
                     if (rs != null) {
                         String[] columnNames = getColumnNames(rs);
                         while (rs.next()) {// 遍历每一行记录
                             Map<String, Object> entityTeam = new HashMap<String, Object>();// 实体组
                             for (Class<?> entityClass : entityClasses) {// 对每一个对象实例化
-                                Object entity = parseSqlPair.getEntitys(entityClass, rs, columnNames);
+                                Object entity = EntityResolver.getEntitys(entityClass, rs, columnNames);
                                 entityTeam.put(entityClass.getName(), entity);
                             }
                             results.add(entityTeam);
                         }
                     }
                 } catch (Exception e) {
-                    LogDborm.error(e);
+                    LoggerUtils.error(e);
                 } finally {
                     closeRs(rs);
                 }
@@ -457,7 +444,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-15上午11:29:16
      */
-    public <T> boolean isExist(T entity) {
+    public static <T> boolean isExist(T entity) {
         boolean result = false;
         if (entity != null) {
             Connection conn = getConnection();
@@ -465,7 +452,7 @@ public class Dborm {
                 try {
                     result = isExist(entity, conn);
                 } catch (Exception e) {
-                    LogDborm.error(this.getClass().getName(), e);
+                    LoggerUtils.error(e);
                 } finally {
                     dbormDataBase.closeConn(conn);
                 }
@@ -482,18 +469,18 @@ public class Dborm {
      * @return true：存在;false：不存在
      * @author KEQIAO KEJI
      */
-    public <T> boolean isExist(T entity, Connection conn) {
+    public static <T> boolean isExist(T entity, Connection conn) {
         boolean result = false;
         if (entity != null) {
             ResultSet rs = null;
             try {
-                PairDborm<String, String[]> pair = parseSqlPair.getCountByPrimaryKey(entity);
-                rs = connectionDB.getResultSet(pair.first, pair.second, conn);
+                PairDborm<String, Object[]> pair = SQLPairFactory.getCountByPrimaryKey(entity);
+                rs = SQLExcuter.getResultSet(pair.first, pair.second, conn);
                 if (rs != null && rs.next() && rs.getInt(1) > 0) {// rs.moveToNext()一定要走
                     result = true;
                 }
             } catch (Exception e) {
-                LogDborm.error(this.getClass().getName(), e);
+                LoggerUtils.error(e);
             } finally {
                 closeRs(rs);
             }
@@ -509,21 +496,21 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-6-6下午5:23:13
      */
-    public int getEntityCount(Class<?> entityClass) {
+    public static int getEntityCount(Class<?> entityClass) {
         int count = 0;
         if (entityClass != null) {
             Connection conn = getConnection();
             if (conn != null) {
                 ResultSet rs = null;
                 try {
-                    PairDborm<String, String[]> pair = parseSqlPair.getEntityCount(entityClass);
-                    rs = connectionDB.getResultSet(pair.first, pair.second, conn);
+                    PairDborm<String, Object[]> pair = SQLPairFactory.getEntityCount(entityClass);
+                    rs = SQLExcuter.getResultSet(pair.first, pair.second, conn);
                     if (rs != null) {
                         rs.next();
                         count = rs.getInt(1);
                     }
                 } catch (Exception e) {
-                    LogDborm.error(e);
+                    LoggerUtils.error(e);
                 } finally {
                     closeRs(rs);
                     dbormDataBase.closeConn(conn);
@@ -542,18 +529,18 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-15上午11:32:30
      */
-    public int getCount(String sql, String[] selectionArgs) {
+    public static int getCount(String sql, String[] selectionArgs) {
         int count = 0;
         if (StringUtilsDborm.isNotBlank(sql)) {
             Connection conn = getConnection();
             if (conn != null) {
                 ResultSet rs = null;
                 try {
-                    rs = connectionDB.getResultSet(sql, selectionArgs, conn);
+                    rs = SQLExcuter.getResultSet(sql, selectionArgs, conn);
                     rs.next();
                     count = rs.getInt(1);
                 } catch (Exception e) {
-                    LogDborm.error(this.getClass().getName(), e);
+                    LoggerUtils.error(e);
                 } finally {
                     closeRs(rs);
                     dbormDataBase.closeConn(conn);
@@ -570,16 +557,16 @@ public class Dborm {
      * @@return true:执行成功 false:执行失败或空的参数
      * @author KEQIAO KEJI
      */
-    public boolean execSql(String sql) {
+    public static boolean execSql(String sql) {
         boolean result = false;
         if (StringUtilsDborm.isNotBlank(sql)) {
             Connection conn = getConnection();
             if (conn != null) {
                 try {
-                    connectionDB.execSQL(sql, null, conn);
+                    SQLExcuter.execSQL(sql, null, conn);
                     result = true;
                 } catch (Exception e) {
-                    LogDborm.error(e);
+                    LoggerUtils.error(e);
                 } finally {
                     dbormDataBase.closeConn(conn);
                 }
@@ -598,7 +585,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-6下午4:23:11
      */
-    public boolean execSql(String sql, Object[] bindArgs) {
+    public static boolean execSql(String sql, Object[] bindArgs) {
         boolean result = false;
         if (StringUtilsDborm.isNotBlank(sql)) {
             Connection conn = getConnection();
@@ -607,7 +594,7 @@ public class Dborm {
                     execSql(sql, bindArgs, conn);
                     result = true;
                 } catch (Exception e) {
-                    LogDborm.error(e);
+                    LoggerUtils.error(e);
                 } finally {
                     dbormDataBase.closeConn(conn);
                 }
@@ -624,14 +611,14 @@ public class Dborm {
      * @param conn     数据库连接
      * @return true:执行成功 false:执行失败或空的参数
      */
-    public boolean execSql(String sql, Object[] bindArgs, Connection conn) {
+    public static boolean execSql(String sql, Object[] bindArgs, Connection conn) {
         boolean result = false;
         if (StringUtilsDborm.isNotBlank(sql)) {
             try {
-                connectionDB.execSQL(sql, bindArgs, conn);
+                SQLExcuter.execSQL(sql, bindArgs, conn);
                 result = true;
             } catch (Exception e) {
-                LogDborm.error(e);
+                LoggerUtils.error(e);
                 result = false;
             }
         }
@@ -646,16 +633,16 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-6-7下午3:08:45
      */
-    public boolean execSql(List<PairDborm<String, Object[]>> execSqlPairList) {
+    public static boolean execSql(List<PairDborm<String, Object[]>> execSqlPairList) {
         boolean result = false;
         if (execSqlPairList != null && execSqlPairList.size() > 0) {
             Connection conn = getConnection();
             if (conn != null) {
                 try {
-                    connectionDB.execSQLUseTransaction(execSqlPairList, conn);
+                    SQLExcuter.execSQLUseTransaction(execSqlPairList, conn);
                     result = true;
                 } catch (Exception e) {
-                    LogDborm.error(e);
+                    LoggerUtils.error(e);
                 } finally {
                     dbormDataBase.closeConn(conn);
                 }
@@ -669,7 +656,7 @@ public class Dborm {
      *
      * @return 数据库连接或null
      */
-    public Connection getConnection() {
+    public static Connection getConnection() {
         if (dbormDataBase != null) {
             return dbormDataBase.getConnection();
         } else {
@@ -678,7 +665,7 @@ public class Dborm {
     }
 
 
-    private String[] getColumnNames(ResultSet rs) throws SQLException {
+    private static String[] getColumnNames(ResultSet rs) throws SQLException {
         ResultSetMetaData resultSetMetaData = rs.getMetaData();
         int count = resultSetMetaData.getColumnCount();
         String[] columnNames = new String[count];
@@ -689,7 +676,7 @@ public class Dborm {
     }
 
 
-    private void closeRs(ResultSet rs) {
+    private static void closeRs(ResultSet rs) {
         if (rs != null) {
             try {
                 rs.close();
@@ -698,7 +685,7 @@ public class Dborm {
         }
     }
 
-    private <T> List<T> entityToEntityList(T entity) {
+    private static <T> List<T> entityToEntityList(T entity) {
         List<T> entitys = new ArrayList<T>();
         entitys.add(entity);
         return entitys;

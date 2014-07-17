@@ -36,10 +36,10 @@ public class DeepSaveOrReplaceTest extends BaseTest {
         user.setQsmOptionList(optionList);
         List<LoginUser> users = new ArrayList<LoginUser>();
         users.add(user);
-        boolean result = Dborm.getDborm().insert(users);
+        boolean result = Dborm.insert(users);
         assertEquals(true, result);
-        assertEquals(1, Dborm.getDborm().getEntityCount(LoginUser.class));
-        assertEquals(num, Dborm.getDborm().getEntityCount(QsmOption.class));
+        assertEquals(1, Dborm.getEntityCount(LoginUser.class));
+        assertEquals(num, Dborm.getEntityCount(QsmOption.class));
     }
 
     @Test
@@ -59,10 +59,10 @@ public class DeepSaveOrReplaceTest extends BaseTest {
         user.setQsmOptionList(optionList);
         List<LoginUser> users = new ArrayList<LoginUser>();
         users.add(user);
-        boolean result = Dborm.getDborm().saveOrReplace(users);
+        boolean result = Dborm.saveOrReplace(users);
         assertEquals(true, result);
-        assertEquals(1, Dborm.getDborm().getEntityCount(LoginUser.class));
-        assertEquals(num * 2, Dborm.getDborm().getEntityCount(QsmOption.class));
+        assertEquals(1, Dborm.getEntityCount(LoginUser.class));
+        assertEquals(num * 2, Dborm.getEntityCount(QsmOption.class));
     }
 
     @AfterClass

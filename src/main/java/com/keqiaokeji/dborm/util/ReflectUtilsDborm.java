@@ -78,8 +78,7 @@ public class ReflectUtilsDborm {
             field.setAccessible(true);
             return field.get(entity);// 获取字段的值
         } catch (Exception e) {
-            LogDborm.error(ReflectUtilsDborm.class.getName(), "Can't get field (" + field.getName() + ") value from object (" + entity
-                    + ") by reflect!", e);
+            LoggerUtils.error("Can't get field (" + field.getName() + ") value from object (" + entity + ") by reflect!", e);
         }
         return null;
     }
@@ -97,7 +96,6 @@ public class ReflectUtilsDborm {
     public static boolean setFieldValue(Field field, Object entity, Object value) {
         if (field == null || entity == null) {
             return false;
-
         }
 
         try {
@@ -105,8 +103,7 @@ public class ReflectUtilsDborm {
             field.set(entity, value);
             return true;
         } catch (Exception e) {
-            LogDborm.error(ReflectUtilsDborm.class.getName(), "Can't set value（" + value + "） to instance（" + entity.getClass().getName()
-                    + "） field（" + field.getName() + "）  by reflect!", e);
+            LoggerUtils.error("Can't set value（" + value + "） to instance（" + entity.getClass().getName() + "） field（" + field.getName() + "）  by reflect!", e);
         }
         return false;
     }
@@ -127,7 +124,7 @@ public class ReflectUtilsDborm {
         try {
             return entityClass.newInstance();
         } catch (Exception e) {
-            LogDborm.error(ReflectUtilsDborm.class.getName(), "Can't create instance（" + entityClass.getName() + "）  by reflect!", e);
+            LoggerUtils.error("Can't create instance（" + entityClass.getName() + "）  by reflect!", e);
         }
         return null;
     }

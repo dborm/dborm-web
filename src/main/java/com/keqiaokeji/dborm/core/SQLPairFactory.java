@@ -1,15 +1,12 @@
 package com.keqiaokeji.dborm.core;
 
 import com.keqiaokeji.dborm.domain.TableBean;
-import com.keqiaokeji.dborm.util.LogDborm;
 import com.keqiaokeji.dborm.util.PairDborm;
 import com.keqiaokeji.dborm.util.ReflectUtilsDborm;
 import com.keqiaokeji.dborm.util.StringUtilsDborm;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,76 +19,68 @@ import java.util.Set;
  * @author KEQIAO KEJI
  * @time 2013-6-5下午1:31:57
  */
-class ParseSqlPair {
+public class SQLPairFactory {
 
-    private ParseEntity parseEntity;
-    private ParseSql parseSql;
-    private ConvertDBType convertDBType;
-    private DbormConnectionDB connectionDB;
 
-    public ParseSqlPair() {
-        parseEntity = new ParseEntity();
-        parseSql = new ParseSql();
-        convertDBType = new ConvertDBType();
-        connectionDB = new DbormConnectionDB();
-    }
-
-    public <T> PairDborm<String, Object[]> insert(T entity) {
+    public static <T> PairDborm<String, Object[]> insert(T entity) {
         entity = Dborm.getDbormDataBase().beforeInsert(entity);
         Class<?> entityClass = entity.getClass();
         String sql = Cache.getSqlCache(entityClass.getName() + ".INSERT");
         if (StringUtilsDborm.isEmpty(sql)) {// 如果缓存中取不到已解析的SQL
-            sql = parseSql.getInsertSql(entityClass);
+            sql = SQLTranslater.getInsertSql(entityClass);
+            Cache.putSqlCache(entityClass.getName() + ".INSERT", sql);
         }
-        List<Object> bindArgs = parseEntity.getColumnFiledValuesUseDefault(entity);
+        List<Object> bindArgs = EntityResolver.getColumnFiledValuesUseDefault(entity);
         return PairDborm.create(sql, bindArgs.toArray());
     }
 
-    public <T> List<PairDborm<String, Object[]>> insertDeep(T entity) {
+    public static <T> List<PairDborm<String, Object[]>> insertDeep(T entity) {
         List<PairDborm<String, Object[]>> pairList = new ArrayList<PairDborm<String, Object[]>>();
         pairList.add(insert(entity));
-        pairList.addAll(getRelationFieldPair(entity, PairType.INSERT));
+        pairList.addAll(getRelationPair(entity, PairType.INSERT));
         return pairList;
     }
 
-    public <T> PairDborm<String, Object[]> update(T entity) {
+    public static <T> PairDborm<String, Object[]> update(T entity) {
         entity = Dborm.getDbormDataBase().beforeUpdate(entity);
         Class<?> entityClass = entity.getClass();
         String sql = Cache.getSqlCache(entityClass.getName() + ".UPDATE");
         if (StringUtilsDborm.isEmpty(sql)) {// 如果缓存中取不到已解析的SQL
-            sql = parseSql.getUpdateSql(entityClass);
+            sql = SQLTranslater.getUpdateSql(entityClass);
+            Cache.putSqlCache(entityClass.getName() + ".UPDATE", sql);
         }
-        List<Object> bindArgs = parseEntity.getColumnFiledValuesUseDefault(entity);
-        bindArgs.addAll(parseEntity.getPrimaryKeyFiledValues(entity));
+        List<Object> bindArgs = EntityResolver.getColumnFiledValues(entity);
+        bindArgs.addAll(EntityResolver.getPrimaryKeyFiledValues(entity));
         return PairDborm.create(sql, bindArgs.toArray());
     }
 
-    public <T> List<PairDborm<String, Object[]>> updateDeep(T entity) {
+    public static <T> List<PairDborm<String, Object[]>> updateDeep(T entity) {
         List<PairDborm<String, Object[]>> pairList = new ArrayList<PairDborm<String, Object[]>>();
         pairList.add(update(entity));
-        pairList.addAll(getRelationFieldPair(entity, PairType.UPDATE));
+        pairList.addAll(getRelationPair(entity, PairType.UPDATE));
         return pairList;
     }
 
-    public <T> PairDborm<String, Object[]> delete(T entity) {
+    public static <T> PairDborm<String, Object[]> delete(T entity) {
         entity = Dborm.getDbormDataBase().beforeDelete(entity);
         Class<?> entityClass = entity.getClass();
         String sql = Cache.getSqlCache(entityClass.getName() + ".DELETE");
         if (StringUtilsDborm.isEmpty(sql)) {// 如果缓存中取不到已解析的SQL
-            sql = parseSql.getDeleteSql(entityClass);
+            sql = SQLTranslater.getDeleteSql(entityClass);
+            Cache.putSqlCache(entityClass.getName() + ".DELETE", sql);
         }
-        List<Object> bindArgs = parseEntity.getPrimaryKeyFiledValues(entity);
+        List<Object> bindArgs = EntityResolver.getPrimaryKeyFiledValues(entity);
         return PairDborm.create(sql, bindArgs.toArray());
     }
 
-    public <T> List<PairDborm<String, Object[]>> deleteDeep(T entity) {
+    public static <T> List<PairDborm<String, Object[]>> deleteDeep(T entity) {
         List<PairDborm<String, Object[]>> pairList = new ArrayList<PairDborm<String, Object[]>>();
         pairList.add(delete(entity));
-        pairList.addAll(getRelationFieldPair(entity, PairType.DELETE));
+        pairList.addAll(getRelationPair(entity, PairType.DELETE));
         return pairList;
     }
 
-    public <T> PairDborm<String, Object[]> replace(T entity) {
+    public static <T> PairDborm<String, Object[]> replace(T entity) {
         Class<?> entityClass = entity.getClass();
         StringBuilder sqlContent = new StringBuilder("UPDATE ");
         String tableName = Cache.getTablesCache(entityClass).getTableName();
@@ -100,7 +89,7 @@ class ParseSqlPair {
         StringBuilder columnName = new StringBuilder();
         List<Object> bindArgs = new ArrayList<Object>();
 
-        Map<String, Field> columnFields = parseEntity.getEntityColumnFields(entityClass);
+        Map<String, Field> columnFields = Cache.getEntityColumnFieldsCache(entityClass);
         Set<Entry<String, Field>> entrySet = columnFields.entrySet();
         if(entrySet.size() > 0) {
             for (Entry<String, Field> entry : entrySet) {
@@ -109,48 +98,48 @@ class ParseSqlPair {
                 if (value != null) {// 如果当前属性的值不是null则修改
                     columnName.append(entry.getKey());
                     columnName.append("=?, ");
-                    value = convertDBType.convertToColumnValue(value);
+                    value = DataTypeConverter.fieldValueToColumnValue(value);
                     bindArgs.add(value);
                 }
             }
         }
         sqlContent.append(StringUtilsDborm.cutLastSign(columnName.toString(), ", "));
         sqlContent.append(" WHERE ");
-        sqlContent.append(parseSql.parsePrimaryKeyWhere(entityClass));
-        bindArgs.addAll(parseEntity.getPrimaryKeyFiledValues(entity));
+        sqlContent.append(SQLTranslater.parsePrimaryKeyWhere(entityClass));
+        bindArgs.addAll(EntityResolver.getPrimaryKeyFiledValues(entity));
         return PairDborm.create(sqlContent.toString(), bindArgs.toArray());
     }
 
-    public <T> List<PairDborm<String, Object[]>> replaceDeep(T entity) {
+    public static <T> List<PairDborm<String, Object[]>> replaceDeep(T entity) {
         List<PairDborm<String, Object[]>> pairList = new ArrayList<PairDborm<String, Object[]>>();
         pairList.add(replace(entity));
-        pairList.addAll(getRelationFieldPair(entity, PairType.REPLACE));
+        pairList.addAll(getRelationPair(entity, PairType.REPLACE));
         return pairList;
     }
 
-    public <T> List<PairDborm<String, Object[]>> saveOrUpdateDeep(T entity, Connection conn) {
+    public static <T> List<PairDborm<String, Object[]>> saveOrUpdateDeep(T entity, Connection conn) {
         List<PairDborm<String, Object[]>> pairList = new ArrayList<PairDborm<String, Object[]>>();
-        if (isExist(entity, conn)) {
+        if (Dborm.isExist(entity, conn)) {
             pairList.add(update(entity));
         } else {
             pairList.add(insert(entity));
         }
-        pairList.addAll(getRelationFieldPair(entity, PairType.SAVEORUPDATE, conn));
+        pairList.addAll(getRelationSavePair(entity, PairType.SAVEORUPDATE, conn));
         return pairList;
     }
 
-    public <T> List<PairDborm<String, Object[]>> saveOrReplaceDeep(T entity, Connection conn) {
+    public static <T> List<PairDborm<String, Object[]>> saveOrReplaceDeep(T entity, Connection conn) {
         List<PairDborm<String, Object[]>> pairList = new ArrayList<PairDborm<String, Object[]>>();
-        if (isExist(entity, conn)) {
+        if (Dborm.isExist(entity, conn)) {
             pairList.add(replace(entity));
         } else {
             pairList.add(insert(entity));
         }
-        pairList.addAll(getRelationFieldPair(entity, PairType.SAVEORREPLACE, conn));
+        pairList.addAll(getRelationSavePair(entity, PairType.SAVEORREPLACE, conn));
         return pairList;
     }
 
-    public PairDborm<String, String[]> getEntityCount(Class<?> entityClass) {
+    public static PairDborm<String, Object[]> getEntityCount(Class<?> entityClass) {
         // 例如： SELECT COUNT(*) FROM
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM ");
         String tableName = Cache.getTablesCache(entityClass).getTableName();
@@ -158,19 +147,18 @@ class ParseSqlPair {
         return PairDborm.create(sql.toString(), null);
     }
 
-    public <T> PairDborm<String, String[]> getCountByPrimaryKey(T entity) {
+    public static <T> PairDborm<String, Object[]> getCountByPrimaryKey(T entity) {
         // 例如： SELECT COUNT(*) FROM users WHERE user_id=?
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM ");
-        String[] bindArgs;
         Class<?> entityClass = entity.getClass();
         String tableName = Cache.getTablesCache(entityClass).getTableName();
         sql.append(tableName);
         sql.append(" WHERE ");
-        sql.append(parseSql.parsePrimaryKeyWhere(entityClass));
-        List<Object> primaryKeyValue = parseEntity.getPrimaryKeyFiledValues(entity);
-        bindArgs = new String[primaryKeyValue.size()];
+        sql.append(SQLTranslater.parsePrimaryKeyWhere(entityClass));
+        List<Object> primaryKeyValue = EntityResolver.getPrimaryKeyFiledValues(entity);
+        Object[] bindArgs = new String[primaryKeyValue.size()];
         for (int i = 0; i < primaryKeyValue.size(); i++) {
-            bindArgs[i] = primaryKeyValue.get(i).toString();
+            bindArgs[i] = primaryKeyValue.get(i);
         }
         return PairDborm.create(sql.toString(), bindArgs);
     }
@@ -181,7 +169,7 @@ class ParseSqlPair {
     /**
      * 当前的级联操作类型
      */
-    private enum PairType {
+    private static enum PairType {
         INSERT, UPDATE, DELETE, REPLACE, SAVEORUPDATE, SAVEORREPLACE
     }
 
@@ -194,7 +182,7 @@ class ParseSqlPair {
      * @author KEQIAO KEJI
      * @time 2013-6-5下午1:55:14
      */
-    private <T> List<PairDborm<String, Object[]>> getRelationFieldPair(T entity, PairType type) {
+    private static <T> List<PairDborm<String, Object[]>> getRelationPair(T entity, PairType type) {
         List<PairDborm<String, Object[]>> pairList = new ArrayList<PairDborm<String, Object[]>>();
         Class<?> entityClass = entity.getClass();
         TableBean table = Cache.getTablesCache(entityClass);
@@ -230,7 +218,7 @@ class ParseSqlPair {
     }
 
     /**
-     * 获取级联对象的SQL语句对
+     * 获取级联对象SAVE相关的SQL语句对
      *
      * @param entity 对象
      * @param type   操作类型
@@ -239,7 +227,7 @@ class ParseSqlPair {
      * @author KEQIAO KEJI
      * @time 2013-6-5下午1:55:14
      */
-    private <T> List<PairDborm<String, Object[]>> getRelationFieldPair(T entity, PairType type, Connection conn) {
+    private static <T> List<PairDborm<String, Object[]>> getRelationSavePair(T entity, PairType type, Connection conn) {
         List<PairDborm<String, Object[]>> pairList = new ArrayList<PairDborm<String, Object[]>>();
         Class<?> entityClass = entity.getClass();
         TableBean table = Cache.getTablesCache(entityClass);
@@ -280,42 +268,7 @@ class ParseSqlPair {
         return pairList;
     }
 
-    public Object getEntitys(Class<?> entityClass, ResultSet rs, String[] columnNames) throws SQLException {
-        Map<String, Field> fields = parseEntity.getEntityAllFields(entityClass);// 获得该类的所有属性，支持联合查询
-        Object entity = ReflectUtilsDborm.createInstance(entityClass);// 创建实体类的实例
-        for (int i = 0; i < columnNames.length; i++) {
-            Field field = fields.get(columnNames[i]);
-            if (field != null) {
-                Object value = convertDBType.convertToParamValue(rs, i + 1, field);
-                ReflectUtilsDborm.setFieldValue(field, entity, value);
-            }
-        }
-        return entity;
-    }
 
 
-
-    private <T> boolean isExist(T entity, Connection conn) {
-        boolean result = false;
-        if (entity != null) {
-            ResultSet rs = null;
-            try {
-                PairDborm<String, String[]> pair = getCountByPrimaryKey(entity);
-                rs = connectionDB.getResultSet(pair.first, pair.second, conn);
-                if (rs != null && rs.next() && rs.getInt(1) > 0) {// rs.moveToNext()一定要走
-                    result = true;
-                }
-            } catch (Exception e) {
-                LogDborm.error(this.getClass().getName(), e);
-            } finally {
-                if(rs != null){
-                    try {
-                        rs.close();
-                    }catch (Exception ignored){}
-                }
-            }
-        }
-        return result;
-    }
 
 }
