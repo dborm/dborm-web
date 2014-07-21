@@ -5,10 +5,7 @@ import com.keqiaokeji.dborm.util.LoggerUtils;
 import com.keqiaokeji.dborm.util.PairDborm;
 import com.keqiaokeji.dborm.util.StringUtilsDborm;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,8 +20,6 @@ import java.util.Map;
 public class Dborm {
 
     private static DbormDataBase dbormDataBase;
-//    private DataSource dataSource;
-
 
 
     /**
@@ -356,14 +351,6 @@ public class Dborm {
         return results;
     }
 
-//    interface    ResultMapper<T> {
-//        <T> T map(ResultSet rs);
-//    }
-//
-//    public <T> List<T> getEntities(String sql, String[] bindArgs, Class<?> entityClass,ResultMapper<T> mapper){
-//
-//    }
-
     /**
      * 根据查询语句返回实体集合
      *
@@ -375,7 +362,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-6上午11:23:46
      */
-    public static <T> List<T> getEntities(String sql, String[] bindArgs, Class<?> entityClass, Connection conn) {
+    public static <T> List<T> getEntities(String sql, Object[] bindArgs, Class<?> entityClass, Connection conn) {
         List<T> results = new ArrayList<T>();
         if (StringUtilsDborm.isNotBlank(sql) && entityClass != null && conn != null) {
             ResultSet rs = null;
@@ -398,7 +385,7 @@ public class Dborm {
     }
 
     /**
-     * 多表联合查询时使用
+     * 多表联合查询
      *
      * @param sql           查询语句
      * @param bindArgs      查询语句所需的参数（该参数允许为null）
@@ -435,6 +422,73 @@ public class Dborm {
         }
         return results;
     }
+
+    /**
+     * 根据实例模版查询（根据实例对象中属性值不为空的属性做过滤条件）
+     *
+     * @param example 实例模版
+     * @param <T>     实例类型
+     * @return 实体集合或无实体的list集合
+     */
+    public static <T> List<T> getEntitiesByExample(T example) {
+        List<T> results = new ArrayList<T>();
+        Connection conn = getConnection();
+        if (conn != null) {
+            try {
+                PairDborm<String, Object[]> pair = SQLPairFactory.getEntitiesByExample(example);
+                results = getEntities(pair.first, pair.second, example.getClass(), conn);
+            } catch (Exception e) {
+                LoggerUtils.error(e);
+            } finally {
+                dbormDataBase.closeConn(conn);
+            }
+        }
+        return results;
+    }
+
+    /**
+     * 自定义数据映射规则
+     *
+     * @param <T> 数据的类型
+     */
+    public interface ResultMapper<T> {
+        T map(ResultSet rs);
+    }
+
+    /**
+     * 根据查询语句及自定义结果集转换类返回实体集合
+     *
+     * @param sql      查询语句
+     * @param bindArgs 查询语句所需的参数（该参数允许为null）
+     * @param mapper   自定义的结果集与对象转换的类
+     * @param <T>      结果集类型
+     * @return 实体集合或无实体的list集合
+     */
+    public static <T> List<T> getEntities(String sql, String[] bindArgs, ResultMapper<T> mapper) {
+        List<T> results = new ArrayList<T>();
+        DbormDataBase dbormDataBase = Dborm.getDbormDataBase();
+        Connection conn = null;
+        ResultSet rs = null;
+        try {
+            conn = dbormDataBase.getConnection();
+            rs = SQLExcuter.getResultSet(sql, bindArgs, conn);
+            while (rs.next()) {
+                results.add(mapper.map(rs));
+            }
+        } catch (Exception e) {
+            LoggerUtils.error(Dborm.class.getName(), e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                dbormDataBase.closeConn(conn);
+            } catch (Exception ignored) {
+            }
+        }
+        return results;
+    }
+
 
     /**
      * 根据对象主键判断对象是否存在

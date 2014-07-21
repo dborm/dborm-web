@@ -163,6 +163,34 @@ public class SQLPairFactory {
         return PairDborm.create(sql.toString(), bindArgs);
     }
 
+    public static <T> PairDborm<String, Object[]> getEntitiesByExample(T entity) {
+        Class<?> entityClass = entity.getClass();
+        StringBuilder sqlContent = new StringBuilder("SELECT * FROM ");
+        String tableName = Cache.getTablesCache(entityClass).getTableName();
+        sqlContent.append(tableName);
+        sqlContent.append(" WHERE 1=1 ");
+        StringBuilder columnName = new StringBuilder();
+        List<Object> bindArgs = new ArrayList<Object>();
+
+        Map<String, Field> columnFields = Cache.getEntityColumnFieldsCache(entityClass);
+        Set<Entry<String, Field>> entrySet = columnFields.entrySet();
+        if(entrySet.size() > 0) {
+            for (Entry<String, Field> entry : entrySet) {
+                Field field = entry.getValue();
+                Object value = ReflectUtilsDborm.getFieldValue(field, entity);
+                if (value != null) {// 如果当前属性的值不是null则修改
+                    columnName.append(" AND ");
+                    columnName.append(entry.getKey());
+                    columnName.append("=? ");
+                    value = DataTypeConverter.fieldValueToColumnValue(value);
+                    bindArgs.add(value);
+                }
+            }
+        }
+        sqlContent.append(StringUtilsDborm.cutLastSign(columnName.toString(), ", "));
+        return PairDborm.create(sqlContent.toString(), bindArgs.toArray());
+    }
+
 
 
 

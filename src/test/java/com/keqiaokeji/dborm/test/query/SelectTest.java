@@ -14,6 +14,7 @@ import org.junit.Test;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,6 +82,41 @@ public class SelectTest extends BaseTest {
         List<QsmOption> userList = Dborm.getEntities(sql, bindArgs, QsmOption.class);
         assertEquals(10, userList.size());
         assertEquals(QSM_CONTENT, userList.get(2).getContent());
+    }
+
+    @Test
+    public void testB25GetEntitiesByExample() {
+        QsmOption qsmOption = new QsmOption();
+        qsmOption.setUserId(USER_ID);
+        List<QsmOption> userList = Dborm.getEntitiesByExample(qsmOption);
+        assertEquals(10, userList.size());
+        assertEquals(QSM_CONTENT, userList.get(2).getContent());
+    }
+
+
+    String myMapperContantTest = "mapper_test";
+
+    @Test
+    public void testB30GetEntitys() {
+        String sql = "SELECT * FROM qsm_option where user_id = ? ";
+        String[] bindArgs = new String[]{USER_ID};
+        List<QsmOption> userList = Dborm.getEntities(sql, bindArgs, new MyMapper());
+        assertEquals(10, userList.size());
+        assertEquals(QSM_CONTENT+myMapperContantTest, userList.get(2).getContent());
+    }
+
+    class MyMapper implements Dborm.ResultMapper<QsmOption> {
+
+        @Override
+        public QsmOption map(ResultSet rs) {
+            QsmOption qsmOption = new QsmOption();
+            try {
+                qsmOption.setContent(rs.getString("content") + myMapperContantTest);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return qsmOption;
+        }
     }
 
     @Test
