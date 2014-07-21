@@ -33,7 +33,7 @@ public class AnnotationUtils {
             tableDomain = new TableBean();
             String tableName = tableAnnotation.tableName();
             if (StringUtilsDborm.isEmpty(tableName)) {
-                tableName = StringUtilsDborm.generateUnderlineName(entityClass.getSimpleName());
+                tableName = StringUtilsDborm.humpToUnderlineName(entityClass.getSimpleName());
             }
             tableDomain.setTableName(tableName);
             tableDomain.setColumns(getColumnDomains(entityClass));
@@ -50,7 +50,7 @@ public class AnnotationUtils {
             Column columnAnnotation = field.getAnnotation(Column.class);
             if (columnAnnotation != null) {
                 ColumnBean columnDomain = getColumnDomain(field, columnAnnotation);
-                String columnName = StringUtilsDborm.generateUnderlineName(field.getName());
+                String columnName = StringUtilsDborm.humpToUnderlineName(field.getName());
                 columns.put(columnName, columnDomain);
             }
         }

@@ -96,21 +96,53 @@ public class StringUtilsDborm {
      * @author KEQIAO KEJI
      * @time 2013-5-2下午8:29:03
      */
-    public static String generateUnderlineName(String name) {
-        StringBuilder sb = new StringBuilder();
+    public static String humpToUnderlineName(String name) {
+        StringBuilder builder = new StringBuilder();
         for (int i = 0; i < name.length(); i++) {
             char ch = name.charAt(i);
             if (i > 0 && Character.isUpperCase(ch)) {// 首字母是大写不需要添加下划线
-                sb.append('_');
+                builder.append('_');
             }
-            sb.append(ch);
+            builder.append(ch);
         }
 
         int startIndex = 0;
-        if (sb.charAt(0) == '_') {
+        if (builder.charAt(0) == '_') {//如果以下划线开头则忽略第一个下划线
             startIndex = 1;
         }
-        return sb.substring(startIndex).toLowerCase();
+        return builder.substring(startIndex).toLowerCase();
+    }
+
+
+    /**
+     * 下划线格式的名称转换为驼峰格式的名称，如：login_name转换之后为loginName
+     *
+     * @param name             下划线格式的名称
+     * @param firstCharToUpper 第一个字符是否转换为大写
+     * @return 驼峰格式的名称
+     */
+    public static String underlineToHumpName(String name, boolean firstCharToUpper) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < name.length(); i++) {
+            char ch = name.charAt(i);
+            if (i == 0 && firstCharToUpper) {
+                builder.append(Character.toUpperCase(ch));
+            } else {
+                if (i > 0 && ch == '_') {// 首字母是大写不需要添加下划线
+                    i++;
+                    ch = name.charAt(i);
+                    builder.append(Character.toUpperCase(ch));
+                } else {
+                    builder.append(ch);
+                }
+            }
+        }
+        return builder.toString();
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(underlineToHumpName("login_name", false));
     }
 
 }

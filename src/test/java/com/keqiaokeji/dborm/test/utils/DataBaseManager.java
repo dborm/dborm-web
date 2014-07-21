@@ -5,7 +5,7 @@ import com.keqiaokeji.dborm.util.LoggerUtils;
 
 import java.sql.*;
 
-public class ConnectionManager extends DbormDataBase {
+public class DataBaseManager extends DbormDataBase {
 
     /**
      * 获得数据库连接

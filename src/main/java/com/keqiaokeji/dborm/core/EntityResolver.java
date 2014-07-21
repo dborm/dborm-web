@@ -31,7 +31,7 @@ public class EntityResolver {
         List<Field> fields = ReflectUtilsDborm.getFields(entityClass);
         Map<String, Field> allFields = new HashMap<String, Field>();
         for (Field field : fields) {
-            allFields.put(StringUtilsDborm.generateUnderlineName(field.getName()), field);
+            allFields.put(StringUtilsDborm.humpToUnderlineName(field.getName()), field);
         }
         return allFields;
     }

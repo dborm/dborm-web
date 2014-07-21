@@ -12,7 +12,7 @@ public class BaseTest {
         DbormContexts.log = new LoggerTools();
         DbormContexts.showSql = true;
         try {
-            Dborm.setDbormDataBase(new ConnectionManager());
+            Dborm.setDbormDataBase(new DataBaseManager());
 
             cleanTable();
         } catch (Exception e) {

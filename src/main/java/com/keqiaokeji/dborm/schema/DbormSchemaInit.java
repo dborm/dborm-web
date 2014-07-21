@@ -86,7 +86,7 @@ public class DbormSchemaInit {
                 String name = getStringAttributeValue(table, SchemaConstants.TABLE_NAME);
                 if (name == null) {
                     String className = classPath.substring(classPath.lastIndexOf("\\."));
-                    StringUtilsDborm.generateUnderlineName(className);
+                    StringUtilsDborm.humpToUnderlineName(className);
                 }
                 TableBean tableDomain = new TableBean();
                 tableDomain.setClassPath(classPath);
@@ -118,7 +118,7 @@ public class DbormSchemaInit {
             columnDomain.setFieldName(fieldName);
             columnDomain.setPrimaryKey(getBooleanAttributeValue(column, SchemaConstants.COLUMN_IS_PRIMARY_KEY));
             columnDomain.setDefaultValue(getDefaultValue(column));
-            String columnName = StringUtilsDborm.generateUnderlineName(fieldName);
+            String columnName = StringUtilsDborm.humpToUnderlineName(fieldName);
             fieldList.put(columnName, columnDomain);
         }
         return fieldList;
