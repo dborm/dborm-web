@@ -10,7 +10,7 @@ import java.util.Date;
  * @author KEQIAO KEJI
  * @date 2013-4-17 下午3:07:28
  */
-public class LoggerTools implements LoggerDborm {
+public class DBLogger implements LoggerDborm {
 
     private String commonTarget = "com.keqiaokeji.dborm";
 

@@ -1,11 +1,11 @@
 package com.keqiaokeji.dborm.core;
 
-import com.keqiaokeji.dborm.util.DbormDataBase;
-import com.keqiaokeji.dborm.util.LoggerUtils;
-import com.keqiaokeji.dborm.util.PairDborm;
-import com.keqiaokeji.dborm.util.StringUtilsDborm;
+import com.keqiaokeji.dborm.util.*;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +20,22 @@ import java.util.Map;
 public class Dborm {
 
     private static DbormDataBase dbormDataBase;
+
+    public Dborm(DbormDataBase dbormDataBase) {
+        Dborm.dbormDataBase = dbormDataBase;
+    }
+
+    public Dborm(DbormDataBase dbormDataBase, LoggerDborm loggerDborm) {
+        Dborm.dbormDataBase = dbormDataBase;
+        DbormContexts.log = loggerDborm;
+    }
+
+    public Dborm(DbormDataBase dbormDataBase, LoggerDborm loggerDborm, boolean showSql) {
+        Dborm.dbormDataBase = dbormDataBase;
+        DbormContexts.log = loggerDborm;
+        DbormContexts.showSql = showSql;
+    }
+
 
 
     /**
@@ -286,12 +302,12 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-6上午11:23:46
      */
-    public static <T> T getEntitie(String sql, String[] bindArgs, Class<?> entityClass) {
+    public static <T> T getEntitie(String sql, Object[] bindArgs, Class<?> entityClass) {
         T result = null;
         Connection conn = getConnection();
         if (conn != null) {
             try {
-                result = getEntitie(sql, bindArgs, entityClass, conn);
+                result = getEntity(sql, bindArgs, entityClass, conn);
             } catch (Exception e) {
                 LoggerUtils.error(e);
             } finally {
@@ -312,7 +328,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-6上午11:23:46
      */
-    public static <T> T getEntitie(String sql, String[] bindArgs, Class<?> entityClass, Connection conn) {
+    public static <T> T getEntity(String sql, Object[] bindArgs, Class<?> entityClass, Connection conn) {
         if (StringUtilsDborm.isNotBlank(sql) && entityClass != null && conn != null) {
             try {
                 List<T> entityList = getEntities(sql, bindArgs, entityClass, conn);
@@ -336,7 +352,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-6上午11:23:46
      */
-    public static <T> List<T> getEntities(String sql, String[] bindArgs, Class<?> entityClass) {
+    public static <T> List<T> getEntities(String sql, Object[] bindArgs, Class<?> entityClass) {
         List<T> results = new ArrayList<T>();
         Connection conn = getConnection();
         if (conn != null) {
@@ -394,7 +410,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-6-7上午10:42:18
      */
-    public static List<Map<String, Object>> getEntities(String sql, String[] bindArgs, Class<?>[] entityClasses) {
+    public static List<Map<String, Object>> getEntities(String sql, Object[] bindArgs, Class<?>[] entityClasses) {
         List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
         if (StringUtilsDborm.isNotBlank(sql) && entityClasses != null && entityClasses.length > 0) {
             Connection conn = getConnection();
@@ -427,15 +443,38 @@ public class Dborm {
      * 根据实例模版查询（根据实例对象中属性值不为空的属性做过滤条件）
      *
      * @param example 实例模版
+     * @param isAnd   true：使用AND连接多个条件，false：使用OR连接多个条件
+     * @param <T>     实例类型
+     * @return 实体对象(如果有多个实体对象则返回第一个)或null
+     */
+    public static <T> T getEntityByExample(T example, boolean isAnd) {
+        if (example != null) {
+            try {
+                List<T> entityList = getEntitiesByExample(example, isAnd);
+                if (entityList != null && entityList.size() > 0) {
+                    return entityList.get(0);
+                }
+            } catch (Exception e) {
+                LoggerUtils.error(e);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 根据实例模版查询（根据实例对象中属性值不为空的属性做过滤条件）
+     *
+     * @param example 实例模版
+     * @param isAnd   true：使用AND连接多个条件，false：使用OR连接多个条件
      * @param <T>     实例类型
      * @return 实体集合或无实体的list集合
      */
-    public static <T> List<T> getEntitiesByExample(T example) {
+    public static <T> List<T> getEntitiesByExample(T example, boolean isAnd) {
         List<T> results = new ArrayList<T>();
         Connection conn = getConnection();
         if (conn != null) {
             try {
-                PairDborm<String, Object[]> pair = SQLPairFactory.getEntitiesByExample(example);
+                PairDborm<String, Object[]> pair = SQLPairFactory.getEntitiesByExample(example, isAnd);
                 results = getEntities(pair.first, pair.second, example.getClass(), conn);
             } catch (Exception e) {
                 LoggerUtils.error(e);
@@ -464,7 +503,7 @@ public class Dborm {
      * @param <T>      结果集类型
      * @return 实体集合或无实体的list集合
      */
-    public static <T> List<T> getEntities(String sql, String[] bindArgs, ResultMapper<T> mapper) {
+    public static <T> List<T> getEntities(String sql, Object[] bindArgs, ResultMapper<T> mapper) {
         List<T> results = new ArrayList<T>();
         DbormDataBase dbormDataBase = Dborm.getDbormDataBase();
         Connection conn = null;
@@ -583,7 +622,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-15上午11:32:30
      */
-    public static int getCount(String sql, String[] selectionArgs) {
+    public static int getCount(String sql, Object[] selectionArgs) {
         int count = 0;
         if (StringUtilsDborm.isNotBlank(sql)) {
             Connection conn = getConnection();

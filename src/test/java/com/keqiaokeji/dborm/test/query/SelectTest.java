@@ -88,7 +88,7 @@ public class SelectTest extends BaseTest {
     public void testB25GetEntitiesByExample() {
         QsmOption qsmOption = new QsmOption();
         qsmOption.setUserId(USER_ID);
-        List<QsmOption> userList = Dborm.getEntitiesByExample(qsmOption);
+        List<QsmOption> userList = Dborm.getEntitiesByExample(qsmOption, true);
         assertEquals(10, userList.size());
         assertEquals(QSM_CONTENT, userList.get(2).getContent());
     }

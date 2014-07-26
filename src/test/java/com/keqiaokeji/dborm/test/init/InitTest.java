@@ -1,8 +1,8 @@
 package com.keqiaokeji.dborm.test.init;
 
 import com.keqiaokeji.dborm.core.Dborm;
+import com.keqiaokeji.dborm.test.utils.DBLogger;
 import com.keqiaokeji.dborm.test.utils.DataBaseManager;
-import com.keqiaokeji.dborm.test.utils.LoggerTools;
 import com.keqiaokeji.dborm.test.utils.domain.LoginUser;
 import com.keqiaokeji.dborm.util.DbormContexts;
 import org.junit.AfterClass;
@@ -30,7 +30,7 @@ public class InitTest {
 
     private void initDbormContexts() {
         DbormContexts.showSql = true;
-        DbormContexts.log = new LoggerTools();
+        DbormContexts.log = new DBLogger();
     }
 
     private void initDborm() {

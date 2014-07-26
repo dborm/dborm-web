@@ -9,7 +9,7 @@ public class BaseTest {
 
 
     static {
-        DbormContexts.log = new LoggerTools();
+        DbormContexts.log = new DBLogger();
         DbormContexts.showSql = true;
         try {
             Dborm.setDbormDataBase(new DataBaseManager());

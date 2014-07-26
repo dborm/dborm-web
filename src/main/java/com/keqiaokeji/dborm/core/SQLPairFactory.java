@@ -7,11 +7,8 @@ import com.keqiaokeji.dborm.util.StringUtilsDborm;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * 解析出SQL语句及对应的参数对
@@ -91,7 +88,7 @@ public class SQLPairFactory {
 
         Map<String, Field> columnFields = Cache.getEntityColumnFieldsCache(entityClass);
         Set<Entry<String, Field>> entrySet = columnFields.entrySet();
-        if(entrySet.size() > 0) {
+        if (entrySet.size() > 0) {
             for (Entry<String, Field> entry : entrySet) {
                 Field field = entry.getValue();
                 Object value = ReflectUtilsDborm.getFieldValue(field, entity);
@@ -163,7 +160,7 @@ public class SQLPairFactory {
         return PairDborm.create(sql.toString(), bindArgs);
     }
 
-    public static <T> PairDborm<String, Object[]> getEntitiesByExample(T entity) {
+    public static <T> PairDborm<String, Object[]> getEntitiesByExample(T entity, boolean isAnd) {
         Class<?> entityClass = entity.getClass();
         StringBuilder sqlContent = new StringBuilder("SELECT * FROM ");
         String tableName = Cache.getTablesCache(entityClass).getTableName();
@@ -174,12 +171,16 @@ public class SQLPairFactory {
 
         Map<String, Field> columnFields = Cache.getEntityColumnFieldsCache(entityClass);
         Set<Entry<String, Field>> entrySet = columnFields.entrySet();
-        if(entrySet.size() > 0) {
+        if (entrySet.size() > 0) {
             for (Entry<String, Field> entry : entrySet) {
                 Field field = entry.getValue();
                 Object value = ReflectUtilsDborm.getFieldValue(field, entity);
                 if (value != null) {// 如果当前属性的值不是null则修改
-                    columnName.append(" AND ");
+                    if (isAnd) {
+                        columnName.append(" AND ");
+                    } else {
+                        columnName.append(" OR ");
+                    }
                     columnName.append(entry.getKey());
                     columnName.append("=? ");
                     value = DataTypeConverter.fieldValueToColumnValue(value);
@@ -190,8 +191,6 @@ public class SQLPairFactory {
         sqlContent.append(StringUtilsDborm.cutLastSign(columnName.toString(), ", "));
         return PairDborm.create(sqlContent.toString(), bindArgs.toArray());
     }
-
-
 
 
     /**
@@ -295,8 +294,6 @@ public class SQLPairFactory {
         }
         return pairList;
     }
-
-
 
 
 }
