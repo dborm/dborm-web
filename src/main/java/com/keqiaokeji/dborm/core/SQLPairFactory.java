@@ -78,6 +78,7 @@ public class SQLPairFactory {
     }
 
     public static <T> PairDborm<String, Object[]> replace(T entity) {
+        entity = Dborm.getDbormDataBase().beforeReplace(entity);
         Class<?> entityClass = entity.getClass();
         StringBuilder sqlContent = new StringBuilder("UPDATE ");
         String tableName = Cache.getTablesCache(entityClass).getTableName();

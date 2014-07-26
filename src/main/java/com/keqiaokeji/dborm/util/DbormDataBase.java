@@ -53,6 +53,16 @@ public abstract class DbormDataBase {
     }
 
     /**
+     * 替换队形操作之前
+     * @param entity 实体对象
+     * @param <T>    对象类型
+     * @return 处理之后的对象
+     */
+    public <T> T beforeReplace(T entity){
+        return entity;
+    }
+
+    /**
      * 关闭数据库链接
      *
      * @param conn 数据库链接
