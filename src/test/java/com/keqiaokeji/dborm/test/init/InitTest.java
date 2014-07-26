@@ -51,7 +51,7 @@ public class InitTest {
         user.setBirthday(new Date());
         boolean ins = Dborm.insert(user);
         assertEquals(true, ins);
-        LoginUser user1 = Dborm.getEntitie("select * from login_user", null, LoginUser.class);
+        LoginUser user1 = Dborm.getEntity("select * from login_user", null, LoginUser.class);
         boolean result = true;
         if (user1 == null) {
             result = false;

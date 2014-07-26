@@ -71,7 +71,7 @@ public class SelectTest extends BaseTest {
     public void testB15GetEntity() {
         String sql = "SELECT * FROM login_user where user_id = ? ";
         String[] bindArgs = new String[]{USER_ID};
-        LoginUser user = Dborm.getEntitie(sql, bindArgs, LoginUser.class);
+        LoginUser user = Dborm.getEntity(sql, bindArgs, LoginUser.class);
         assertEquals(USER_NAME, user.getUserName());
     }
 

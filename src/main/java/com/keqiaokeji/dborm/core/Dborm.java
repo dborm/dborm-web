@@ -302,7 +302,7 @@ public class Dborm {
      * @author KEQIAO KEJI
      * @time 2013-5-6上午11:23:46
      */
-    public static <T> T getEntitie(String sql, Object[] bindArgs, Class<?> entityClass) {
+    public static <T> T getEntity(String sql, Object[] bindArgs, Class<?> entityClass) {
         T result = null;
         Connection conn = getConnection();
         if (conn != null) {
