@@ -9,11 +9,9 @@
 		<column default_value="null" field_name="attachmentCount" is_primary_key="false"/>
 		<column default_value="null" field_name="userId" is_primary_key="false"/>
 	</table>
+
+	<!-- 一个xml文件中可以同时描述多个Domain（多张表） -->
     
-    <!-- <table class_path="com.keqiaokeji.dborm.test.utils.domain.QsmInfo" tableName="qsm_info" remark="调查问卷信息表" >
-        <column field_name = "questionId" remark="关联到的问题id"/>
-        <column field_name = "content" remark="选项的内容"/>
-    	<column field_name = "userId" remark="用户ID，外键"/>
-    </table> -->
+    
     
 </tables>
