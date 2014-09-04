@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tables>
     
-	<table class_path="com.keqiaokeji.dborm.test.utils.domain.QsmOption" tableName="qsm_option">
+	<table class_path="cn.cocho.dborm.test.utils.domain.QsmOption" tableName="qsm_option">
 		<column default_value="null" field_name="optionId" is_primary_key="true"/>
 		<column default_value="null" field_name="questionId" is_primary_key="false"/>
 		<column default_value="null" field_name="content" is_primary_key="false"/>
