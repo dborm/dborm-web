@@ -7,7 +7,7 @@ package cn.cocho.dborm.util;
  * @author KEQIAO KEJI
  * @time 2013-4-17 下午3:07:28
  */
-public class LoggerUtils {
+public class LoggerUtilsDborm {
 
     /**
      * 调试信息

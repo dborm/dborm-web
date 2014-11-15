@@ -72,7 +72,7 @@ public class Dborm {
                     SQLExcuter.execSQLUseTransaction(pairList, conn);
                     result = true;
                 } catch (Exception e) {
-                    LoggerUtils.error(e);
+                    LoggerUtilsDborm.error(e);
                 } finally {
                     dbormDataBase.closeConn(conn);
                 }
@@ -114,7 +114,7 @@ public class Dborm {
                     SQLExcuter.execSQLUseTransaction(pairList, conn);
                     result = true;
                 } catch (Exception e) {
-                    LoggerUtils.error(e);
+                    LoggerUtilsDborm.error(e);
                 } finally {
                     dbormDataBase.closeConn(conn);
                 }
@@ -156,7 +156,7 @@ public class Dborm {
                     SQLExcuter.execSQLUseTransaction(pairList, conn);
                     result = true;
                 } catch (Exception e) {
-                    LoggerUtils.error(e);
+                    LoggerUtilsDborm.error(e);
                 } finally {
                     dbormDataBase.closeConn(conn);
                 }
@@ -198,7 +198,7 @@ public class Dborm {
                     SQLExcuter.execSQLUseTransaction(pairList, conn);
                     result = true;
                 } catch (Exception e) {
-                    LoggerUtils.error(e);
+                    LoggerUtilsDborm.error(e);
                 } finally {
                     dbormDataBase.closeConn(conn);
                 }
@@ -240,7 +240,7 @@ public class Dborm {
                     SQLExcuter.execSQLUseTransaction(pairList, conn);
                     result = true;
                 } catch (Exception e) {
-                    LoggerUtils.error(e);
+                    LoggerUtilsDborm.error(e);
                 } finally {
                     dbormDataBase.closeConn(conn);
                 }
@@ -282,7 +282,7 @@ public class Dborm {
                     SQLExcuter.execSQLUseTransaction(pairList, conn);
                     result = true;
                 } catch (Exception e) {
-                    LoggerUtils.error(e);
+                    LoggerUtilsDborm.error(e);
                 } finally {
                     dbormDataBase.closeConn(conn);
                 }
@@ -309,7 +309,7 @@ public class Dborm {
             try {
                 result = getEntity(sql, bindArgs, entityClass, conn);
             } catch (Exception e) {
-                LoggerUtils.error(e);
+                LoggerUtilsDborm.error(e);
             } finally {
                 dbormDataBase.closeConn(conn);
             }
@@ -336,7 +336,7 @@ public class Dborm {
                     return entityList.get(0);
                 }
             } catch (Exception e) {
-                LoggerUtils.error(e);
+                LoggerUtilsDborm.error(e);
             }
         }
         return null;
@@ -359,7 +359,7 @@ public class Dborm {
             try {
                 results = getEntities(sql, bindArgs, entityClass, conn);
             } catch (Exception e) {
-                LoggerUtils.error(e);
+                LoggerUtilsDborm.error(e);
             } finally {
                 dbormDataBase.closeConn(conn);
             }
@@ -392,7 +392,7 @@ public class Dborm {
                     }
                 }
             } catch (Exception e) {
-                LoggerUtils.error(e);
+                LoggerUtilsDborm.error(e);
             } finally {
                 closeRs(rs);
             }
@@ -430,7 +430,7 @@ public class Dborm {
                         }
                     }
                 } catch (Exception e) {
-                    LoggerUtils.error(e);
+                    LoggerUtilsDborm.error(e);
                 } finally {
                     closeRs(rs);
                 }
@@ -455,7 +455,7 @@ public class Dborm {
                     return entityList.get(0);
                 }
             } catch (Exception e) {
-                LoggerUtils.error(e);
+                LoggerUtilsDborm.error(e);
             }
         }
         return null;
@@ -477,7 +477,7 @@ public class Dborm {
                 PairDborm<String, Object[]> pair = SQLPairFactory.getEntitiesByExample(example, isAnd);
                 results = getEntities(pair.first, pair.second, example.getClass(), conn);
             } catch (Exception e) {
-                LoggerUtils.error(e);
+                LoggerUtilsDborm.error(e);
             } finally {
                 dbormDataBase.closeConn(conn);
             }
@@ -515,7 +515,7 @@ public class Dborm {
                 results.add(mapper.map(rs));
             }
         } catch (Exception e) {
-            LoggerUtils.error(Dborm.class.getName(), e);
+            LoggerUtilsDborm.error(Dborm.class.getName(), e);
         } finally {
             try {
                 if (rs != null) {
@@ -545,7 +545,7 @@ public class Dborm {
                 try {
                     result = isExist(entity, conn);
                 } catch (Exception e) {
-                    LoggerUtils.error(e);
+                    LoggerUtilsDborm.error(e);
                 } finally {
                     dbormDataBase.closeConn(conn);
                 }
@@ -573,7 +573,7 @@ public class Dborm {
                     result = true;
                 }
             } catch (Exception e) {
-                LoggerUtils.error(e);
+                LoggerUtilsDborm.error(e);
             } finally {
                 closeRs(rs);
             }
@@ -603,7 +603,7 @@ public class Dborm {
                         count = rs.getInt(1);
                     }
                 } catch (Exception e) {
-                    LoggerUtils.error(e);
+                    LoggerUtilsDborm.error(e);
                 } finally {
                     closeRs(rs);
                     dbormDataBase.closeConn(conn);
@@ -633,7 +633,7 @@ public class Dborm {
                     rs.next();
                     count = rs.getInt(1);
                 } catch (Exception e) {
-                    LoggerUtils.error(e);
+                    LoggerUtilsDborm.error(e);
                 } finally {
                     closeRs(rs);
                     dbormDataBase.closeConn(conn);
@@ -659,7 +659,7 @@ public class Dborm {
                     SQLExcuter.execSQL(sql, null, conn);
                     result = true;
                 } catch (Exception e) {
-                    LoggerUtils.error(e);
+                    LoggerUtilsDborm.error(e);
                 } finally {
                     dbormDataBase.closeConn(conn);
                 }
@@ -687,7 +687,7 @@ public class Dborm {
                     execSql(sql, bindArgs, conn);
                     result = true;
                 } catch (Exception e) {
-                    LoggerUtils.error(e);
+                    LoggerUtilsDborm.error(e);
                 } finally {
                     dbormDataBase.closeConn(conn);
                 }
@@ -711,7 +711,7 @@ public class Dborm {
                 SQLExcuter.execSQL(sql, bindArgs, conn);
                 result = true;
             } catch (Exception e) {
-                LoggerUtils.error(e);
+                LoggerUtilsDborm.error(e);
                 result = false;
             }
         }
@@ -735,7 +735,7 @@ public class Dborm {
                     SQLExcuter.execSQLUseTransaction(execSqlPairList, conn);
                     result = true;
                 } catch (Exception e) {
-                    LoggerUtils.error(e);
+                    LoggerUtilsDborm.error(e);
                 } finally {
                     dbormDataBase.closeConn(conn);
                 }

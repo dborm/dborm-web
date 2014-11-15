@@ -126,7 +126,7 @@ public class SQLExcuter {
                         }
                     }
                 }
-                LoggerUtils.debug(sqlContent.toString());
+                LoggerUtilsDborm.debug(sqlContent.toString());
             }
         } else {
             throw new IllegalArgumentException("需要执行的SQL语句不能为空!");

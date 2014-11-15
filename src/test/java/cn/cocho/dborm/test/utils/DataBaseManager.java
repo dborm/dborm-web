@@ -1,7 +1,7 @@
 package cn.cocho.dborm.test.utils;
 
 import cn.cocho.dborm.util.DbormDataBase;
-import cn.cocho.dborm.util.LoggerUtils;
+import cn.cocho.dborm.util.LoggerUtilsDborm;
 
 import java.sql.*;
 
@@ -36,7 +36,7 @@ public class DataBaseManager extends DbormDataBase {
             Class.forName(driver);// 加载驱动程序
             conn = DriverManager.getConnection(url, username, password);// 连续数据库
         } catch (Exception e) {
-            LoggerUtils.error(e);
+            LoggerUtilsDborm.error(e);
         }
 
         return conn;

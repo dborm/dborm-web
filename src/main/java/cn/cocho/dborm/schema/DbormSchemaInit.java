@@ -2,7 +2,7 @@ package cn.cocho.dborm.schema;
 
 import cn.cocho.dborm.domain.ColumnBean;
 import cn.cocho.dborm.domain.TableBean;
-import cn.cocho.dborm.util.LoggerUtils;
+import cn.cocho.dborm.util.LoggerUtilsDborm;
 import cn.cocho.dborm.util.StringUtilsDborm;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -71,11 +71,11 @@ public class DbormSchemaInit {
             DocumentBuilder builder = factory.newDocumentBuilder();
             document = builder.parse(inputStream);
         } catch (ParserConfigurationException e) {
-            LoggerUtils.error(DbormSchemaInit.class.getName(), e);
+            LoggerUtilsDborm.error(DbormSchemaInit.class.getName(), e);
         } catch (SAXException e) {
-            LoggerUtils.error(DbormSchemaInit.class.getName(), e);
+            LoggerUtilsDborm.error(DbormSchemaInit.class.getName(), e);
         } catch (IOException e) {
-            LoggerUtils.error(DbormSchemaInit.class.getName(), e);
+            LoggerUtilsDborm.error(DbormSchemaInit.class.getName(), e);
         }
         if (document != null) {
             Element root = document.getDocumentElement();// 获得根元素

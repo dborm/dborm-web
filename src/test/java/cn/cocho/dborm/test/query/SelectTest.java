@@ -6,7 +6,7 @@ import cn.cocho.dborm.test.utils.BaseTest;
 import cn.cocho.dborm.test.utils.domain.LoginUser;
 import cn.cocho.dborm.test.utils.domain.QsmOption;
 import cn.cocho.dborm.util.DbormDataBase;
-import cn.cocho.dborm.util.LoggerUtils;
+import cn.cocho.dborm.util.LoggerUtilsDborm;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -137,7 +137,7 @@ public class SelectTest extends BaseTest {
             int age = rs.getInt(3);
             assertEquals(USER_AGE, age);
         } catch (Exception e) {
-            LoggerUtils.error(this.getClass().getName(), e);
+            LoggerUtilsDborm.error(this.getClass().getName(), e);
         } finally {
             try {
                 rs.close();
@@ -166,7 +166,7 @@ public class SelectTest extends BaseTest {
                 System.out.println(showOrder);//float类型的值不能直接判断是否相等
             }
         } catch (Exception e) {
-            LoggerUtils.error(this.getClass().getName(), e);
+            LoggerUtilsDborm.error(this.getClass().getName(), e);
         } finally {
             try {
                 rs.close();
