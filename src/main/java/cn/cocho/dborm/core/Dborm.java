@@ -37,7 +37,6 @@ public class Dborm {
     }
 
 
-
     /**
      * 新增实体（自动添加事务）
      *
@@ -440,6 +439,17 @@ public class Dborm {
     }
 
     /**
+     * 根据实例模版查询（根据实例对象中属性值不为空的属性做过滤条件，默认情况下，添加之间是AND关系）
+     *
+     * @param example 实例模版
+     * @param <T>     实例类型
+     * @return 实体对象(如果有多个实体对象则返回第一个)或null
+     */
+    public static <T> T getEntityByExample(T example) {
+        return getEntityByExample(example, true);
+    }
+
+    /**
      * 根据实例模版查询（根据实例对象中属性值不为空的属性做过滤条件）
      *
      * @param example 实例模版
@@ -459,6 +469,17 @@ public class Dborm {
             }
         }
         return null;
+    }
+
+    /**
+     * 根据实例模版查询（根据实例对象中属性值不为空的属性做过滤条件，默认情况下，添加之间是AND关系）
+     *
+     * @param example 实例模版
+     * @param <T>     实例类型
+     * @return 实体集合或无实体的list集合
+     */
+    public static <T> List<T> getEntitiesByExample(T example) {
+        return getEntitiesByExample(example, true);
     }
 
     /**
