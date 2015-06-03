@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <groupId>cn.cocho.dborm.web</groupId>
+    <groupId>cn.cocho.web.lib.dborm</groupId>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>dborm-web</artifactId>
     <packaging>jar</packaging>
-    <version>2.0.0-SNAPSHOTS</version>
+    <version>1.0.0-SNAPSHOT</version>
 
 
     <name>dborm-web Maven Webapp</name>
@@ -104,15 +104,11 @@
 
     <!-- 配置部署的远程仓库 -->
     <distributionManagement>
-        <repository>
-            <id>releases</id>
-            <name>Nexus Release Repository</name>
-            <url>http://112.124.54.136:6001/nexus/content/repositories/releases/ </url>
-        </repository>
         <snapshotRepository>
             <id>nexus-snapshots</id>
             <name>nexus distribution snapshot repository</name>
-            <url>http://112.124.54.136:6001/nexus-2.1.1/content/repositories/snapshots/</url>
+            <!--要发布到snapshots仓库，构件的version必须以SNAPSHOT结尾才可以-->
+            <url>http://112.124.54.136:6001/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
