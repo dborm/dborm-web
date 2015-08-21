@@ -21,7 +21,7 @@ public class DataTypeConverter {
      * @author KEQIAO KEJI
      * @time 2013-5-5上午2:36:18
      */
-    public static Object fieldValueToColumnValue(Object fieldValue) {
+    public Object fieldValueToColumnValue(Object fieldValue) {
         if (fieldValue == null) {
             return null;
         }
@@ -44,7 +44,7 @@ public class DataTypeConverter {
      * @author KEQIAO KEJI
      * @time 2013-5-5上午2:44:02
      */
-    public static Object columnValueToFieldValue(ResultSet rs, String columnName, Field field) throws SQLException {
+    public Object columnValueToFieldValue(ResultSet rs, String columnName, Field field) throws SQLException {
         if (Date.class.equals(field.getType())) {
             long time = rs.getLong(columnName);
             return new Date(time);

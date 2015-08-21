@@ -18,7 +18,7 @@ public class StringUtilsDborm {
      * @author KEQIAO KEJI
      * @time 2013-4-17下午7:04:20
      */
-    public static boolean isNotBlank(String content) {
+    public boolean isNotBlank(String content) {
         return !isBlank(content);
     }
 
@@ -30,7 +30,7 @@ public class StringUtilsDborm {
      * @author KEQIAO KEJI
      * @time 2013-4-17下午7:04:20
      */
-    public static boolean isBlank(String content) {
+    public boolean isBlank(String content) {
         return content == null || content.equals("") || (content.trim().length() == 0);
     }
 
@@ -42,7 +42,7 @@ public class StringUtilsDborm {
      * @author KEQIAO KEJI
      * @time 2013-4-17下午7:04:20
      */
-    public static boolean isEmpty(String content) {
+    public boolean isEmpty(String content) {
         return content == null || content.equals("");
     }
 
@@ -54,7 +54,7 @@ public class StringUtilsDborm {
      * @author KEQIAO KEJI
      * @time 2013-4-17下午7:04:20
      */
-    public static boolean isNotEmpty(String content) {
+    public boolean isNotEmpty(String content) {
         return !isEmpty(content);
     }
 
@@ -65,7 +65,7 @@ public class StringUtilsDborm {
      * @author KEQIAO KEJI
      * @time 2013-4-24下午1:01:23
      */
-    public static String getUUID() {
+    public String getUUID() {
         return UUID.randomUUID().toString().replace("-", "");
     }
 
@@ -78,7 +78,7 @@ public class StringUtilsDborm {
      * @author KEQIAO KEJI
      * @time 2013-5-2下午4:55:06
      */
-    public static String cutLastSign(String content, String sign) {
+    public String cutLastSign(String content, String sign) {
         if (isEmpty(content)) {
             return "";
         }
@@ -96,7 +96,7 @@ public class StringUtilsDborm {
      * @author KEQIAO KEJI
      * @time 2013-5-2下午8:29:03
      */
-    public static String humpToUnderlineName(String name) {
+    public String humpToUnderlineName(String name) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < name.length(); i++) {
             char ch = name.charAt(i);
@@ -121,7 +121,7 @@ public class StringUtilsDborm {
      * @param firstCharToUpper 第一个字符是否转换为大写
      * @return 驼峰格式的名称
      */
-    public static String underlineToHumpName(String name, boolean firstCharToUpper) {
+    public String underlineToHumpName(String name, boolean firstCharToUpper) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < name.length(); i++) {
             char ch = name.charAt(i);
@@ -141,7 +141,7 @@ public class StringUtilsDborm {
     }
 
 
-    public static void main(String[] args) {
+    public void main(String[] args) {
         System.out.println(underlineToHumpName("login_name", false));
     }
 

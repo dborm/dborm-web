@@ -26,7 +26,7 @@ public abstract class DbormDataBase {
      * @param <T>    对象类型
      * @return 处理之后的对象
      */
-    public <T> T beforeInsert(T entity){
+    public <T> T beforeInsert(T entity) {
         return entity;
     }
 
@@ -37,7 +37,7 @@ public abstract class DbormDataBase {
      * @param <T>    对象类型
      * @return 处理之后的对象
      */
-    public <T> T beforeUpdate(T entity){
+    public <T> T beforeUpdate(T entity) {
         return entity;
     }
 
@@ -48,17 +48,18 @@ public abstract class DbormDataBase {
      * @param <T>    对象类型
      * @return 处理之后的对象
      */
-    public <T> T beforeDelete(T entity){
+    public <T> T beforeDelete(T entity) {
         return entity;
     }
 
     /**
      * 替换队形操作之前
+     *
      * @param entity 实体对象
      * @param <T>    对象类型
      * @return 处理之后的对象
      */
-    public <T> T beforeReplace(T entity){
+    public <T> T beforeReplace(T entity) {
         return entity;
     }
 
@@ -75,6 +76,5 @@ public abstract class DbormDataBase {
             }
         }
     }
-
 
 }

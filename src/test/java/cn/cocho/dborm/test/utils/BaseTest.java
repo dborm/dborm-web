@@ -12,9 +12,7 @@ public class BaseTest {
         DbormContexts.log = new DBLogger();
         DbormContexts.showSql = true;
         try {
-            Dborm.setDbormDataBase(new DataBaseManager());
-
-            cleanTable();
+			cleanTable();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -76,11 +74,13 @@ public class BaseTest {
 
 
     public static void cleanTable() {
-        boolean delLogin = Dborm.execSql("delete from login_user");
+		Dborm dborm = new Dborm(new DataBaseManager(), new DBLogger());
+
+		boolean delLogin = dborm.execSql("delete from login_user");
         assertEquals(true, delLogin);
-        boolean delOption = Dborm.execSql("delete from qsm_option");
+        boolean delOption = dborm.execSql("delete from qsm_option");
         assertEquals(true, delOption);
-        boolean delInfo = Dborm.execSql("delete from qsm_info");
+        boolean delInfo = dborm.execSql("delete from qsm_info");
         assertEquals(true, delInfo);
     }
 

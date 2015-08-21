@@ -6,7 +6,7 @@ package cn.cocho.dborm.util;
  * @author KEQIAO KEJI
  * @time 2013年10月29日 @上午10:50:37
  */
-public interface LoggerDborm {
+public interface DbormLogger {
 
 
     /**

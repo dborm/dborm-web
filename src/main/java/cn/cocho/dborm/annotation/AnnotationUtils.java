@@ -20,6 +20,9 @@ import java.util.Set;
  */
 public class AnnotationUtils {
 
+    StringUtilsDborm stringUtils = new StringUtilsDborm();
+    EntityResolver entityResolver = new EntityResolver();
+
     /**
      * 通过类获得该类的注解描述信息
      *
@@ -32,8 +35,8 @@ public class AnnotationUtils {
         if (tableAnnotation != null) {
             tableDomain = new TableBean();
             String tableName = tableAnnotation.tableName();
-            if (StringUtilsDborm.isEmpty(tableName)) {
-                tableName = StringUtilsDborm.humpToUnderlineName(entityClass.getSimpleName());
+            if (stringUtils.isEmpty(tableName)) {
+                tableName = stringUtils.humpToUnderlineName(entityClass.getSimpleName());
             }
             tableDomain.setTableName(tableName);
             tableDomain.setColumns(getColumnDomains(entityClass));
@@ -44,13 +47,13 @@ public class AnnotationUtils {
 
     private Map<String, ColumnBean> getColumnDomains(Class<?> entityClass) {
         Map<String, ColumnBean> columns = new HashMap<String, ColumnBean>();
-        Map<String, Field> allFields = EntityResolver.getEntityAllFields(entityClass);//此处不能从Cache类的缓存里取数据，否则会出现死循环
+        Map<String, Field> allFields = entityResolver.getEntityAllFields(entityClass);//此处不能从Cache类的缓存里取数据，否则会出现死循环
         for (Entry<String, Field> entry : allFields.entrySet()) {
             Field field = entry.getValue();
             Column columnAnnotation = field.getAnnotation(Column.class);
             if (columnAnnotation != null) {
                 ColumnBean columnDomain = getColumnDomain(field, columnAnnotation);
-                String columnName = StringUtilsDborm.humpToUnderlineName(field.getName());
+                String columnName = stringUtils.humpToUnderlineName(field.getName());
                 columns.put(columnName, columnDomain);
             }
         }
@@ -67,7 +70,7 @@ public class AnnotationUtils {
 
     private Set<String> getRelation(Class<?> entityClass) {
         Set<String> relations = new HashSet<String>();
-        Map<String, Field> allFields =  EntityResolver.getEntityAllFields(entityClass);//此处不能从Cache类的缓存里取数据，否则会出现死循环
+        Map<String, Field> allFields =  entityResolver.getEntityAllFields(entityClass);//此处不能从Cache类的缓存里取数据，否则会出现死循环
         for (Entry<String, Field> entry : allFields.entrySet()) {
             Field field = entry.getValue();
             Relation relation = field.getAnnotation(Relation.class);

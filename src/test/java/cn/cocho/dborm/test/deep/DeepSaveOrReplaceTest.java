@@ -2,6 +2,8 @@ package cn.cocho.dborm.test.deep;
 
 import cn.cocho.dborm.core.Dborm;
 import cn.cocho.dborm.test.utils.BaseTest;
+import cn.cocho.dborm.test.utils.DBLogger;
+import cn.cocho.dborm.test.utils.DataBaseManager;
 import cn.cocho.dborm.test.utils.domain.LoginUser;
 import cn.cocho.dborm.test.utils.domain.QsmOption;
 import org.junit.AfterClass;
@@ -18,8 +20,13 @@ public class DeepSaveOrReplaceTest extends BaseTest {
 
     static int num = 3;
 
+
+    static Dborm dborm;
+
+
     @BeforeClass
     public static void initData() {
+        dborm = new Dborm(new DataBaseManager(), new DBLogger());
         LoginUser user = new LoginUser();
         user.setId("relation111");
         user.setUserId("relation1");
@@ -36,10 +43,10 @@ public class DeepSaveOrReplaceTest extends BaseTest {
         user.setQsmOptionList(optionList);
         List<LoginUser> users = new ArrayList<LoginUser>();
         users.add(user);
-        boolean result = Dborm.insert(users);
+        boolean result = dborm.insert(users);
         assertEquals(true, result);
-        assertEquals(1, Dborm.getEntityCount(LoginUser.class));
-        assertEquals(num, Dborm.getEntityCount(QsmOption.class));
+        assertEquals(1, dborm.getEntityCount(LoginUser.class));
+        assertEquals(num, dborm.getEntityCount(QsmOption.class));
     }
 
     @Test
@@ -59,10 +66,10 @@ public class DeepSaveOrReplaceTest extends BaseTest {
         user.setQsmOptionList(optionList);
         List<LoginUser> users = new ArrayList<LoginUser>();
         users.add(user);
-        boolean result = Dborm.saveOrReplace(users);
+        boolean result = dborm.saveOrReplace(users);
         assertEquals(true, result);
-        assertEquals(1, Dborm.getEntityCount(LoginUser.class));
-        assertEquals(num * 2, Dborm.getEntityCount(QsmOption.class));
+        assertEquals(1, dborm.getEntityCount(LoginUser.class));
+        assertEquals(num * 2, dborm.getEntityCount(QsmOption.class));
     }
 
     @AfterClass

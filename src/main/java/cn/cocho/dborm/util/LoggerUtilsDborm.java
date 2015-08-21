@@ -16,7 +16,7 @@ public class LoggerUtilsDborm {
      * @author KEQIAO KEJI
      * @time 2013-6-17下午04:12:48
      */
-    public static void debug(String msg) {
+    public void debug(String msg) {
         if (DbormContexts.log != null) {
             DbormContexts.log.debug(msg);
         }
@@ -31,7 +31,7 @@ public class LoggerUtilsDborm {
      * @author KEQIAO KEJI
      * @time 2013-4-22下午5:03:03
      */
-    public static void error(String msg, Throwable e) {
+    public void error(String msg, Throwable e) {
         if (DbormContexts.log != null) {
             DbormContexts.log.error(msg, e);
         }
@@ -44,7 +44,7 @@ public class LoggerUtilsDborm {
      * @author KEQIAO KEJI
      * @time 2013-6-17下午04:14:30
      */
-    public static void error(Throwable e) {
+    public void error(Throwable e) {
         if (DbormContexts.log != null) {
             DbormContexts.log.error("",e);
         }

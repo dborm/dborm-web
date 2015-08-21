@@ -1,6 +1,6 @@
 package cn.cocho.dborm.test.utils;
 
-import cn.cocho.dborm.util.LoggerDborm;
+import cn.cocho.dborm.util.DbormLogger;
 
 import java.util.Date;
 
@@ -10,7 +10,7 @@ import java.util.Date;
  * @author KEQIAO KEJI
  * @date 2013-4-17 下午3:07:28
  */
-public class DBLogger implements LoggerDborm {
+public class DBLogger implements DbormLogger {
 
     private String commonTarget = "cn.cocho.dborm";
 

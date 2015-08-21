@@ -2,6 +2,8 @@ package cn.cocho.dborm.test.deep;
 
 import cn.cocho.dborm.core.Dborm;
 import cn.cocho.dborm.test.utils.BaseTest;
+import cn.cocho.dborm.test.utils.DBLogger;
+import cn.cocho.dborm.test.utils.DataBaseManager;
 import cn.cocho.dborm.test.utils.domain.LoginUser;
 import cn.cocho.dborm.test.utils.domain.QsmOption;
 import org.junit.AfterClass;
@@ -16,8 +18,12 @@ import static org.junit.Assert.assertEquals;
 
 public class RelationFieldTest extends BaseTest {
 
+
+    static Dborm dborm;
+
     @BeforeClass
     public static void testB10Insert() {
+        dborm = new Dborm(new DataBaseManager(), new DBLogger());
         LoginUser user = new LoginUser();
         user.setId("relation111");
         user.setUserId("relation1");
@@ -32,7 +38,7 @@ public class RelationFieldTest extends BaseTest {
             optionList.add(option);
         }
         user.setQsmOptionList(optionList);
-        boolean result = Dborm.insert(user);
+        boolean result = dborm.insert(user);
         assertEquals(true, result);
     }
 
@@ -53,7 +59,7 @@ public class RelationFieldTest extends BaseTest {
             optionList.add(option);
         }
         user.setQsmOptionList(optionList);
-        boolean result = Dborm.update(user);
+        boolean result = dborm.update(user);
         assertEquals(true, result);
 
     }
@@ -74,7 +80,7 @@ public class RelationFieldTest extends BaseTest {
             optionList.add(option);
         }
         user.setQsmOptionList(optionList);
-        boolean result = Dborm.replace(user);
+        boolean result = dborm.replace(user);
         assertEquals(true, result);
 
     }
@@ -95,7 +101,7 @@ public class RelationFieldTest extends BaseTest {
             optionList.add(option);
         }
         user.setQsmOptionList(optionList);
-        boolean result = Dborm.delete(user);
+        boolean result = dborm.delete(user);
         assertEquals(true, result);
     }
 

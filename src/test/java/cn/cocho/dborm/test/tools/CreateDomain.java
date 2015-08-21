@@ -40,7 +40,7 @@ public class CreateDomain {
         builder.append("\r\n\r\n");
         builder.append("@Table\r\n");
         builder.append("public class ");
-        builder.append(StringUtilsDborm.underlineToHumpName(tableName, true));
+        builder.append(new StringUtilsDborm().underlineToHumpName(tableName, true));
         builder.append("{\r\n\r\n");
         for (int i = 1; i <= data.getColumnCount(); i++) {
 //            @Column(isPrimaryKey = true, defaultValue = "0")
@@ -49,7 +49,7 @@ public class CreateDomain {
             builder.append("\tprivate ");
             builder.append(columnTypeToJavaType(data.getColumnTypeName(i))); //获得指定列的数据类型名
             builder.append(" ");
-            builder.append(StringUtilsDborm.underlineToHumpName(data.getColumnName(i), false));//获得指定列的列名
+            builder.append(new StringUtilsDborm().underlineToHumpName(data.getColumnName(i), false));//获得指定列的列名
             builder.append(";\r\n\n");
         }
         builder.append("\r\n\r\n\r\n}\r\n\r\n");

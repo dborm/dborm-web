@@ -1,8 +1,10 @@
 package cn.cocho.dborm.test.query;
 
 import cn.cocho.dborm.core.Dborm;
-import cn.cocho.dborm.core.SQLExcuter;
+import cn.cocho.dborm.core.SQLExecutor;
 import cn.cocho.dborm.test.utils.BaseTest;
+import cn.cocho.dborm.test.utils.DBLogger;
+import cn.cocho.dborm.test.utils.DataBaseManager;
 import cn.cocho.dborm.test.utils.domain.LoginUser;
 import cn.cocho.dborm.test.utils.domain.QsmOption;
 import cn.cocho.dborm.util.DbormDataBase;
@@ -29,9 +31,11 @@ public class SelectTest extends BaseTest {
 
     private final static String QSM_CONTENT = "测试内容";
 
+    static Dborm dborm;
 
     @BeforeClass
     public static void testA10initData() {
+        dborm = new Dborm(new DataBaseManager(), new DBLogger());
         LoginUser user = new LoginUser();
         user.setId("dsfdsfsdafdsfds2343sdfsdf");
         user.setUserId(USER_ID);
@@ -49,13 +53,13 @@ public class SelectTest extends BaseTest {
             qsmOptionList.add(option);
         }
         user.setQsmOptionList(qsmOptionList);
-        boolean result = Dborm.insert(user);
+        boolean result = dborm.insert(user);
         assertEquals(true, result);
     }
 
     @Test
     public void testB10GetEntityCount() {
-        int count = Dborm.getEntityCount(LoginUser.class);
+        int count = dborm.getEntityCount(LoginUser.class);
         assertEquals(1, count);
     }
 
@@ -63,7 +67,7 @@ public class SelectTest extends BaseTest {
     public void testB13GetCount() {
         String sql = "SELECT COUNT(*) FROM login_user where user_id = ? ";
         String[] selectionArgs = new String[]{USER_ID};
-        int count = Dborm.getCount(sql, selectionArgs);
+        int count = dborm.getCount(sql, selectionArgs);
         assertEquals(1, count);
     }
 
@@ -71,7 +75,7 @@ public class SelectTest extends BaseTest {
     public void testB15GetEntity() {
         String sql = "SELECT * FROM login_user where user_id = ? ";
         String[] bindArgs = new String[]{USER_ID};
-        LoginUser user = Dborm.getEntity(sql, bindArgs, LoginUser.class);
+        LoginUser user = dborm.getEntity(sql, bindArgs, LoginUser.class);
         assertEquals(USER_NAME, user.getUserName());
     }
 
@@ -79,7 +83,7 @@ public class SelectTest extends BaseTest {
     public void testB20GetEntitys() {
         String sql = "SELECT * FROM qsm_option where user_id = ? ";
         String[] bindArgs = new String[]{USER_ID};
-        List<QsmOption> userList = Dborm.getEntities(sql, bindArgs, QsmOption.class);
+        List<QsmOption> userList = dborm.getEntities(sql, bindArgs, QsmOption.class);
         assertEquals(10, userList.size());
         assertEquals(QSM_CONTENT, userList.get(2).getContent());
     }
@@ -88,7 +92,7 @@ public class SelectTest extends BaseTest {
     public void testB25GetEntitiesByExample() {
         QsmOption qsmOption = new QsmOption();
         qsmOption.setUserId(USER_ID);
-        List<QsmOption> userList = Dborm.getEntitiesByExample(qsmOption, true);
+        List<QsmOption> userList = dborm.getEntitiesByExample(qsmOption, true);
         assertEquals(10, userList.size());
         assertEquals(QSM_CONTENT, userList.get(2).getContent());
     }
@@ -100,14 +104,13 @@ public class SelectTest extends BaseTest {
     public void testB30GetEntitys() {
         String sql = "SELECT * FROM qsm_option where user_id = ? ";
         String[] bindArgs = new String[]{USER_ID};
-        List<QsmOption> userList = Dborm.getEntities(sql, bindArgs, new MyMapper());
+        List<QsmOption> userList = dborm.getEntities(sql, bindArgs, new MyMapper());
         assertEquals(10, userList.size());
         assertEquals(QSM_CONTENT+myMapperContantTest, userList.get(2).getContent());
     }
 
     class MyMapper implements Dborm.ResultMapper<QsmOption> {
 
-        @Override
         public QsmOption map(ResultSet rs) {
             QsmOption qsmOption = new QsmOption();
             try {
@@ -123,13 +126,13 @@ public class SelectTest extends BaseTest {
     public void testC10GetCourse() {
         String sql = "SELECT id, user_name, age FROM login_user where user_id = ? ";
         String[] selectionArgs = new String[]{USER_ID};
-        DbormDataBase dbormDataBase = Dborm.getDbormDataBase();
+        DbormDataBase dbormDataBase = dborm.getDataBase();
         Connection conn = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
         try {
             conn = dbormDataBase.getConnection();
-            rs = SQLExcuter.getResultSet(sql, selectionArgs, conn);
+            rs = new SQLExecutor().getResultSet(sql, selectionArgs, conn);
             rs.next();
             String userName = rs.getString("user_name");
             assertEquals(USER_NAME, userName);
@@ -137,7 +140,7 @@ public class SelectTest extends BaseTest {
             int age = rs.getInt(3);
             assertEquals(USER_AGE, age);
         } catch (Exception e) {
-            LoggerUtilsDborm.error(this.getClass().getName(), e);
+            new LoggerUtilsDborm().error(this.getClass().getName(), e);
         } finally {
             try {
                 rs.close();
@@ -152,13 +155,13 @@ public class SelectTest extends BaseTest {
     public void testB30GetCourse() {
         String sql = "SELECT option_id, content, show_order FROM qsm_option where user_id = ? ";
         String[] selectionArgs = new String[]{USER_ID};
-        DbormDataBase dbormDataBase = Dborm.getDbormDataBase();
+        DbormDataBase dbormDataBase = dborm.getDataBase();
         Connection conn = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
         try {
             conn = dbormDataBase.getConnection();
-            rs = SQLExcuter.getResultSet(sql, selectionArgs, conn);
+            rs = new SQLExecutor().getResultSet(sql, selectionArgs, conn);
             while (rs.next()) {
                 String content = rs.getString("content");
                 assertEquals(QSM_CONTENT, content);
@@ -166,7 +169,7 @@ public class SelectTest extends BaseTest {
                 System.out.println(showOrder);//float类型的值不能直接判断是否相等
             }
         } catch (Exception e) {
-            LoggerUtilsDborm.error(this.getClass().getName(), e);
+            new LoggerUtilsDborm().error(this.getClass().getName(), e);
         } finally {
             try {
                 rs.close();

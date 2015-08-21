@@ -13,6 +13,8 @@ import java.util.List;
  */
 public class ReflectUtilsDborm {
 
+    LoggerUtilsDborm loggerUtils = new LoggerUtilsDborm();
+
     /**
      * 获得实体类的所有属性（该方法递归的获取当前类及父类中声明的字段。最终结果以list形式返回）
      *
@@ -21,7 +23,7 @@ public class ReflectUtilsDborm {
      * @author KEQIAO KEJI
      * @time 2013-5-2下午8:53:29
      */
-    public static List<Field> getFields(Class<?> entityClass) {
+    public List<Field> getFields(Class<?> entityClass) {
         if (entityClass == null) {
             return null;
         }
@@ -47,8 +49,8 @@ public class ReflectUtilsDborm {
      * @author KEQIAO KEJI
      * @time 2013-5-6上午11:44:49
      */
-    public static Field getFieldByName(Class<?> entityClass, String fieldName) {
-        List<Field> fields = ReflectUtilsDborm.getFields(entityClass);
+    public Field getFieldByName(Class<?> entityClass, String fieldName) {
+        List<Field> fields = getFields(entityClass);
         for (Field field : fields) {
             String name = field.getName();
             if (name.equals(fieldName)) {
@@ -67,7 +69,7 @@ public class ReflectUtilsDborm {
      * @author KEQIAO KEJI
      * @time 2013-5-6上午11:45:43
      */
-    public static Object getFieldValue(Field field, Object entity) {
+    public Object getFieldValue(Field field, Object entity) {
         if (field == null || entity == null) {
             return null;
         }
@@ -78,7 +80,7 @@ public class ReflectUtilsDborm {
             field.setAccessible(true);
             return field.get(entity);// 获取字段的值
         } catch (Exception e) {
-            LoggerUtilsDborm.error("Can't get field (" + field.getName() + ") value from object (" + entity + ") by reflect!", e);
+            loggerUtils.error("Can't get field (" + field.getName() + ") value from object (" + entity + ") by reflect!", e);
         }
         return null;
     }
@@ -93,7 +95,7 @@ public class ReflectUtilsDborm {
      * @author KEQIAO KEJI
      * @time 2013-5-6上午11:46:54
      */
-    public static boolean setFieldValue(Field field, Object entity, Object value) {
+    public boolean setFieldValue(Field field, Object entity, Object value) {
         if (field == null || entity == null) {
             return false;
         }
@@ -103,7 +105,7 @@ public class ReflectUtilsDborm {
             field.set(entity, value);
             return true;
         } catch (Exception e) {
-            LoggerUtilsDborm.error("Can't set value（" + value + "） to instance（" + entity.getClass().getName() + "） field（" + field.getName() + "）  by reflect!", e);
+            loggerUtils.error("Can't set value（" + value + "） to instance（" + entity.getClass().getName() + "） field（" + field.getName() + "）  by reflect!", e);
         }
         return false;
     }
@@ -116,7 +118,7 @@ public class ReflectUtilsDborm {
      * @author KEQIAO KEJI
      * @time 2013-5-6上午11:48:07
      */
-    public static Object createInstance(Class<?> entityClass) {
+    public Object createInstance(Class<?> entityClass) {
         if (entityClass == null) {
             throw new IllegalArgumentException("Object class mustn't be null");
         }
@@ -124,7 +126,7 @@ public class ReflectUtilsDborm {
         try {
             return entityClass.newInstance();
         } catch (Exception e) {
-            LoggerUtilsDborm.error("Can't create instance（" + entityClass.getName() + "）  by reflect!", e);
+            loggerUtils.error("Can't create instance（" + entityClass.getName() + "）  by reflect!", e);
         }
         return null;
     }

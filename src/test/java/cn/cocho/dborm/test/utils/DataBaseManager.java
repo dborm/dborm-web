@@ -1,11 +1,13 @@
 package cn.cocho.dborm.test.utils;
 
 import cn.cocho.dborm.util.DbormDataBase;
-import cn.cocho.dborm.util.LoggerUtilsDborm;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 public class DataBaseManager extends DbormDataBase {
+
+
 
     /**
      * 获得数据库连接
@@ -27,16 +29,16 @@ public class DataBaseManager extends DbormDataBase {
      */
     private Connection createConnection() {
         String driver = "com.mysql.jdbc.Driver";
-        String url = "jdbc:mysql://127.0.0.1:3306/mdl-test?useUnicode=true&characterEncoding=utf8";
-        String username = "shk";
-        String password = "shk";
+        String url = "jdbc:mysql://rds3tmsxzi96h6921824.mysql.rds.aliyuncs.com:3306/dborm_test_db?useUnicode=true&characterEncoding=utf8";
+        String username = "dborm";
+        String password = "dborm_test";
 
         Connection conn = null;
         try {
             Class.forName(driver);// 加载驱动程序
             conn = DriverManager.getConnection(url, username, password);// 连续数据库
         } catch (Exception e) {
-            LoggerUtilsDborm.error(e);
+            new DBLogger().error("创建数据库连接出错！", e);
         }
 
         return conn;

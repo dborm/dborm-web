@@ -2,10 +2,13 @@ package cn.cocho.dborm.test.deep;
 
 import cn.cocho.dborm.core.Dborm;
 import cn.cocho.dborm.test.utils.BaseTest;
+import cn.cocho.dborm.test.utils.DBLogger;
+import cn.cocho.dborm.test.utils.DataBaseManager;
 import cn.cocho.dborm.test.utils.domain.LoginUser;
 import cn.cocho.dborm.test.utils.domain.QsmInfo;
 import cn.cocho.dborm.test.utils.domain.QsmOption;
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -15,6 +18,15 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class RelationMoreSaveOrReplaceTest extends BaseTest {
+
+
+
+    static Dborm dborm;
+
+    @BeforeClass
+    public static void testA10initData() {
+        dborm = new Dborm(new DataBaseManager(), new DBLogger());
+    }
 
     @Test
     public void testB10Insert() {
@@ -41,10 +53,10 @@ public class RelationMoreSaveOrReplaceTest extends BaseTest {
         }
         user.setQsmInfoList(null);
         //DbormDeep.getDborm().insert(user);
-        boolean result = Dborm.saveOrReplace(user);
+        boolean result = dborm.saveOrReplace(user);
         assertEquals(true, result);
-        assertEquals(10, Dborm.getEntityCount(QsmOption.class));
-        assertEquals(0, Dborm.getEntityCount(QsmInfo.class));
+        assertEquals(10, dborm.getEntityCount(QsmOption.class));
+        assertEquals(0, dborm.getEntityCount(QsmInfo.class));
 
     }
 

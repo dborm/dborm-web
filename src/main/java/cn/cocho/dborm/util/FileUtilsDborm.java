@@ -8,6 +8,7 @@ import java.util.*;
 
 public class FileUtilsDborm {
 
+    StringUtilsDborm stringUtils = new StringUtilsDborm();
 
     /**
      * 获取环境变量下的资源文件
@@ -40,7 +41,7 @@ public class FileUtilsDborm {
         return prop;
     }
 
-    public static Set<String> scanFiles(File file) {
+    public Set<String> scanFiles(File file) {
         Set<String> filePathList = new HashSet<String>();
         if (file.exists()) {
             if (file.isFile()) {
@@ -56,9 +57,9 @@ public class FileUtilsDborm {
     }
 
 
-    public static Set<String> scanClassFileInPackages(String packageName) {
+    public Set<String> scanClassFileInPackages(String packageName) {
         Set<String> filePathList = new HashSet<String>();
-        if (StringUtilsDborm.isNotBlank(packageName)) {
+        if (stringUtils.isNotBlank(packageName)) {
             String packageDirName = packageName.replace(".", "/");
             String packagePrefix = packageDirName;
             String packageSuffix = null;
@@ -78,7 +79,7 @@ public class FileUtilsDborm {
                 e.printStackTrace();
             }
 
-            if (StringUtilsDborm.isNotBlank(packageSuffix)) {//如果后缀不为空，则再次根据后缀过滤
+            if (stringUtils.isNotBlank(packageSuffix)) {//如果后缀不为空，则再次根据后缀过滤
                 for (String filePath : allFilePathList) {
                     String path = filePath.substring(0, filePath.lastIndexOf("/"));
                     if (path.endsWith(packageSuffix)) {//最后一个包名包含指定后缀
@@ -93,7 +94,7 @@ public class FileUtilsDborm {
     }
 
 
-    public static Set<Class<?>> scanClassInPackages(List<String> packageNames) {
+    public Set<Class<?>> scanClassInPackages(List<String> packageNames) {
         Set<Class<?>> results = new HashSet<Class<?>>();
         for (String packageName : packageNames) {
             Set<String> filePathList = scanClassFileInPackages(packageName);

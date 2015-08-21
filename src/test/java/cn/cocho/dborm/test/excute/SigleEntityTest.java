@@ -2,6 +2,8 @@ package cn.cocho.dborm.test.excute;
 
 import cn.cocho.dborm.core.Dborm;
 import cn.cocho.dborm.test.utils.BaseTest;
+import cn.cocho.dborm.test.utils.DBLogger;
+import cn.cocho.dborm.test.utils.DataBaseManager;
 import cn.cocho.dborm.test.utils.domain.LoginUser;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -14,15 +16,19 @@ import static org.junit.Assert.assertEquals;
 public class SigleEntityTest extends BaseTest {
 
 
+    static Dborm dborm;
+
     @BeforeClass
     public static void testB11Insert() {
+        dborm = new Dborm(new DataBaseManager(), new DBLogger());
+
         LoginUser user = new LoginUser();
         user.setId("ID1");
         user.setUserId("USID1");
         user.setUserName("Tom");
         user.setAge(10);
         user.setBirthday(new Date());
-        boolean result = Dborm.insert(user);
+        boolean result = dborm.insert(user);
         assertEquals(true, result);
     }
 
@@ -32,7 +38,7 @@ public class SigleEntityTest extends BaseTest {
         user.setId("ID1");
         user.setUserId("USID1");
         user.setUserName("TomReplace");
-        boolean result = Dborm.replace(user);
+        boolean result = dborm.replace(user);
         assertEquals(true, result);
     }
 
@@ -44,7 +50,7 @@ public class SigleEntityTest extends BaseTest {
         user.setUserName("TomUpdate");
         user.setAge(10);
         user.setBirthday(new Date());
-        boolean result = Dborm.update(user);
+        boolean result = dborm.update(user);
         assertEquals(true, result);
     }
 
@@ -54,7 +60,7 @@ public class SigleEntityTest extends BaseTest {
         user.setId("ID2");
         user.setUserId("USID2");
         user.setUserName("Tom");
-        boolean result = Dborm.saveOrUpdate(user);
+        boolean result = dborm.saveOrUpdate(user);
         assertEquals(true, result);
     }
 
@@ -64,7 +70,7 @@ public class SigleEntityTest extends BaseTest {
         user.setId("ID2");
         user.setUserId("USID2");
         user.setUserName("TomSaveOrUpdate");
-        boolean result = Dborm.saveOrUpdate(user);
+        boolean result = dborm.saveOrUpdate(user);
         assertEquals(true, result);
     }
 
@@ -74,7 +80,7 @@ public class SigleEntityTest extends BaseTest {
         user.setId("ID2");
         user.setUserId("USID2");
         user.setAge(10);
-        boolean result = Dborm.saveOrReplace(user);
+        boolean result = dborm.saveOrReplace(user);
         assertEquals(true, result);
     }
 
@@ -83,7 +89,7 @@ public class SigleEntityTest extends BaseTest {
         LoginUser user = new LoginUser();
         user.setId("ID1");
         user.setUserId("USID1");
-        boolean result = Dborm.delete(user);
+        boolean result = dborm.delete(user);
         assertEquals(true, result);
     }
 

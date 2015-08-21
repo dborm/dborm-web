@@ -7,7 +7,7 @@ CREATE TABLE `login_user` (
   `login_num` int(11) DEFAULT '0',
   `user_id` varchar(64) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`,`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -15,7 +15,7 @@ CREATE TABLE `qsm_info` (
   `content` varchar(64) DEFAULT NULL,
   `user_id` varchar(64) DEFAULT NULL,
   `question_id` varchar(64) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 

@@ -13,8 +13,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author KEQIAO KEJI
  * @time 2013-5-6上午10:37:50
  */
-public class Cache {
+public class CacheDborm {
 
+
+    private static CacheDborm cache;
+    EntityResolver entityResolver = new EntityResolver();
+
+    public static synchronized CacheDborm getCache() {
+        if (cache == null) {
+            cache = new CacheDborm();
+        }
+        return cache;
+    }
 
     /**
      * 缓存数据表的所有表结构相关的信息<br>
@@ -22,18 +32,18 @@ public class Cache {
      * 值为表结构相关信息<br>
      * 静态缓存（程序启动时会一次性初始化完毕）
      */
-    private static ConcurrentHashMap<String, TableBean> tablesCache = new ConcurrentHashMap<String, TableBean>();
+    private ConcurrentHashMap<String, TableBean> tablesCache = new ConcurrentHashMap<String, TableBean>();
 
 
-    public static void putTablesCache(String classPath, TableBean tableBean) {
+    public void putTablesCache(String classPath, TableBean tableBean) {
         tablesCache.put(classPath, tableBean);
     }
 
-    public static void putAllTablesCache(Map<String, TableBean> tables) {
+    public void putAllTablesCache(Map<String, TableBean> tables) {
         tablesCache.putAll(tables);
     }
 
-    public static TableBean getTablesCache(Class<?> entityClass) {
+    public TableBean getTablesCache(Class<?> entityClass) {
         TableBean table = tablesCache.get(entityClass.getName());
         if (table == null) {//如果缓存中不存在则从该类的注解中解析信息，如果解析出信息则添加到缓存中，否则抛出异常
             table = new AnnotationUtils().getTableDomain(entityClass);
@@ -55,17 +65,17 @@ public class Cache {
      * 值：对应的属性对象<br>
      * 动态缓存（随着程序的运行逐渐新增进来，比如用到某一个对象的时候先从缓存中取，如果存在则直接使用，如果不存在则创建并新增到缓存之后使用）
      */
-    private static ConcurrentHashMap<String, Map<String, Field>> entityAllFieldsCache = new ConcurrentHashMap<String, Map<String, Field>>();
+    private ConcurrentHashMap<String, Map<String, Field>> entityAllFieldsCache = new ConcurrentHashMap<String, Map<String, Field>>();
 
-    public static void putEntityAllFieldsCache(String classPath, Map<String, Field> allFiles) {
+    public void putEntityAllFieldsCache(String classPath, Map<String, Field> allFiles) {
         entityAllFieldsCache.put(classPath, allFiles);
     }
 
-    public static Map<String, Field> getEntityAllFieldsCache(Class<?> entityClass) {
+    public Map<String, Field> getEntityAllFieldsCache(Class<?> entityClass) {
         Map<String, Field> allFields = entityAllFieldsCache.get(entityClass.getName());
         if (allFields == null) {// 如果缓存中不存在该对象的反射信息则需解析
-            allFields = EntityResolver.getEntityAllFields(entityClass);
-            Cache.putEntityAllFieldsCache(entityClass.getName(), allFields);
+            allFields = entityResolver.getEntityAllFields(entityClass);
+            putEntityAllFieldsCache(entityClass.getName(), allFields);
         }
         return allFields;
     }
@@ -78,17 +88,17 @@ public class Cache {
      * 值：对应的属性对象<br>
      * 动态初始化
      */
-    private static ConcurrentHashMap<String, Map<String, Field>> entityColumnFieldsCache = new ConcurrentHashMap<String, Map<String, Field>>();
+    private ConcurrentHashMap<String, Map<String, Field>> entityColumnFieldsCache = new ConcurrentHashMap<String, Map<String, Field>>();
 
-    public static void putEntityColumnFieldsCache(String classPath, Map<String, Field> columnFields) {
+    public void putEntityColumnFieldsCache(String classPath, Map<String, Field> columnFields) {
         entityColumnFieldsCache.put(classPath, columnFields);
     }
 
-    public static Map<String, Field> getEntityColumnFieldsCache(Class<?> entityClass) {
+    public Map<String, Field> getEntityColumnFieldsCache(Class<?> entityClass) {
         Map<String, Field> columnFields = entityColumnFieldsCache.get(entityClass.getName());
         if (columnFields == null) {// 如果缓存中不存在该对象的反射信息则需解析
-            columnFields = EntityResolver.getEntityColumnFields(entityClass);
-            Cache.putEntityColumnFieldsCache(entityClass.getName(), columnFields);
+            columnFields = entityResolver.getEntityColumnFields(entityClass);
+            putEntityColumnFieldsCache(entityClass.getName(), columnFields);
         }
         return columnFields;
     }
@@ -101,17 +111,17 @@ public class Cache {
      * 值：对应的属性对象<br>
      * 动态缓存
      */
-    private static ConcurrentHashMap<String, Map<String, Field>> entityPrimaryKeyFieldsCache = new ConcurrentHashMap<String, Map<String, Field>>();
+    private ConcurrentHashMap<String, Map<String, Field>> entityPrimaryKeyFieldsCache = new ConcurrentHashMap<String, Map<String, Field>>();
 
-    public static void putEntityPrimaryKeyFieldsCache(String classPath, Map<String, Field> primaryKeyFiles) {
+    public void putEntityPrimaryKeyFieldsCache(String classPath, Map<String, Field> primaryKeyFiles) {
         entityPrimaryKeyFieldsCache.put(classPath, primaryKeyFiles);
     }
 
-    public static Map<String, Field> getEntityPrimaryKeyFieldsCache(Class<?> entityClass) {
+    public Map<String, Field> getEntityPrimaryKeyFieldsCache(Class<?> entityClass) {
         Map<String, Field> primaryKeys = entityPrimaryKeyFieldsCache.get(entityClass.getName());
         if (primaryKeys == null) {// 如果缓存中不存在该对象的反射信息则需解析
-            primaryKeys = EntityResolver.getEntityPrimaryKeyFields(entityClass);
-            Cache.putEntityPrimaryKeyFieldsCache(entityClass.getName(), primaryKeys);
+            primaryKeys = entityResolver.getEntityPrimaryKeyFields(entityClass);
+            putEntityPrimaryKeyFieldsCache(entityClass.getName(), primaryKeys);
         }
         return primaryKeys;
     }
@@ -123,53 +133,53 @@ public class Cache {
      * 值：SQL语句<br>
      * 动态缓存
      */
-    private static ConcurrentHashMap<String, String> sqlCache = new ConcurrentHashMap<String, String>();
+    private ConcurrentHashMap<String, String> sqlCache = new ConcurrentHashMap<String, String>();
 
-    public static void putSqlCache(String classPathSql, String sql) {
+    public void putSqlCache(String classPathSql, String sql) {
         sqlCache.put(classPathSql, sql);
     }
 
-    public static String getSqlCache(String classPathSql) {
+    public String getSqlCache(String classPathSql) {
         return sqlCache.get(classPathSql);
     }
 
-    public static ConcurrentHashMap<String, TableBean> getTablesCache() {
+    public ConcurrentHashMap<String, TableBean> getTablesCache() {
         return tablesCache;
     }
 
-    public static void setTablesCache(ConcurrentHashMap<String, TableBean> tablesCache) {
-        Cache.tablesCache = tablesCache;
+    public void setTablesCache(ConcurrentHashMap<String, TableBean> tablesCache) {
+        tablesCache = tablesCache;
     }
 
-    public static ConcurrentHashMap<String, Map<String, Field>> getEntityAllFieldsCache() {
+    public ConcurrentHashMap<String, Map<String, Field>> getEntityAllFieldsCache() {
         return entityAllFieldsCache;
     }
 
-    public static void setEntityAllFieldsCache(ConcurrentHashMap<String, Map<String, Field>> entityAllFieldsCache) {
-        Cache.entityAllFieldsCache = entityAllFieldsCache;
+    public void setEntityAllFieldsCache(ConcurrentHashMap<String, Map<String, Field>> entityAllFieldsCache) {
+        entityAllFieldsCache = entityAllFieldsCache;
     }
 
-    public static ConcurrentHashMap<String, Map<String, Field>> getEntityColumnFieldsCache() {
+    public ConcurrentHashMap<String, Map<String, Field>> getEntityColumnFieldsCache() {
         return entityColumnFieldsCache;
     }
 
-    public static void setEntityColumnFieldsCache(ConcurrentHashMap<String, Map<String, Field>> entityColumnFieldsCache) {
-        Cache.entityColumnFieldsCache = entityColumnFieldsCache;
+    public void setEntityColumnFieldsCache(ConcurrentHashMap<String, Map<String, Field>> entityColumnFieldsCache) {
+        entityColumnFieldsCache = entityColumnFieldsCache;
     }
 
-    public static ConcurrentHashMap<String, Map<String, Field>> getEntityPrimaryKeyFieldsCache() {
+    public ConcurrentHashMap<String, Map<String, Field>> getEntityPrimaryKeyFieldsCache() {
         return entityPrimaryKeyFieldsCache;
     }
 
-    public static void setEntityPrimaryKeyFieldsCache(ConcurrentHashMap<String, Map<String, Field>> entityPrimaryKeyFieldsCache) {
-        Cache.entityPrimaryKeyFieldsCache = entityPrimaryKeyFieldsCache;
+    public void setEntityPrimaryKeyFieldsCache(ConcurrentHashMap<String, Map<String, Field>> entityPrimaryKeyFieldsCache) {
+        entityPrimaryKeyFieldsCache = entityPrimaryKeyFieldsCache;
     }
 
-    public static ConcurrentHashMap<String, String> getSqlCache() {
+    public ConcurrentHashMap<String, String> getSqlCache() {
         return sqlCache;
     }
 
-    public static void setSqlCache(ConcurrentHashMap<String, String> sqlCache) {
-        Cache.sqlCache = sqlCache;
+    public void setSqlCache(ConcurrentHashMap<String, String> sqlCache) {
+        sqlCache = sqlCache;
     }
 }

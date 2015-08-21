@@ -14,6 +14,8 @@ import static org.junit.Assert.assertEquals;
 
 public class InitTest {
 
+    Dborm dborm;
+
     public InitTest() {
     }
 
@@ -35,7 +37,7 @@ public class InitTest {
 
     private void initDborm() {
         try {
-            Dborm.setDbormDataBase(new DataBaseManager());
+            dborm = new Dborm(new DataBaseManager(), new DBLogger());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -49,9 +51,9 @@ public class InitTest {
         user.setUserName("Tom");
         user.setAge(10);
         user.setBirthday(new Date());
-        boolean ins = Dborm.insert(user);
+        boolean ins = dborm.insert(user);
         assertEquals(true, ins);
-        LoginUser user1 = Dborm.getEntity("select * from login_user", null, LoginUser.class);
+        LoginUser user1 = dborm.getEntity("select * from login_user", null, LoginUser.class);
         boolean result = true;
         if (user1 == null) {
             result = false;
@@ -62,7 +64,7 @@ public class InitTest {
 
     @AfterClass
     public static void deleteDb() {
-        boolean del = Dborm.execSql("delete from login_user");
+        boolean del = new Dborm(new DataBaseManager(), new DBLogger()).execSql("delete from login_user");
         assertEquals(true, del);
     }
 

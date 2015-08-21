@@ -2,7 +2,10 @@ package cn.cocho.dborm.test.excute;
 
 import cn.cocho.dborm.core.Dborm;
 import cn.cocho.dborm.test.utils.BaseTest;
+import cn.cocho.dborm.test.utils.DBLogger;
+import cn.cocho.dborm.test.utils.DataBaseManager;
 import cn.cocho.dborm.test.utils.domain.LoginUser;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -23,8 +26,12 @@ public class ListEntityTest extends BaseTest {
 
     static int nums = 10;
 
+
+    static Dborm dborm;
+
     @BeforeClass
     public static void setUp() {
+        dborm = new Dborm(new DataBaseManager(), new DBLogger());
         List<LoginUser> userList = new ArrayList<LoginUser>();
         for (int i = 0; i < nums; i++) {
             LoginUser user = new LoginUser();
@@ -35,7 +42,7 @@ public class ListEntityTest extends BaseTest {
             user.setBirthday(new Date());
             userList.add(user);
         }
-        boolean result = Dborm.insert(userList);
+        boolean result = dborm.insert(userList);
         assertEquals(true, result);
     }
 
@@ -49,7 +56,7 @@ public class ListEntityTest extends BaseTest {
             user.setUserName("TomReplaceToLucy");
             userList.add(user);
         }
-        boolean result = Dborm.replace(userList);
+        boolean result = dborm.replace(userList);
         assertEquals(true, result);
     }
 
@@ -64,11 +71,11 @@ public class ListEntityTest extends BaseTest {
             user.setBirthday(new Date());
             userList.add(user);
         }
-        boolean result = Dborm.update(userList);
+        boolean result = dborm.update(userList);
         assertEquals(true, result);
     }
 
-    @BeforeClass
+    @AfterClass
     public static void testC30DeleteList() {
         List<LoginUser> userList = new ArrayList<LoginUser>();
         for (int i = 0; i < nums; i++) {
@@ -77,7 +84,7 @@ public class ListEntityTest extends BaseTest {
             user.setUserId("userId" + i);
             userList.add(user);
         }
-        boolean result = Dborm.delete(userList);
+        boolean result = dborm.delete(userList);
         assertEquals(true, result);
     }
 

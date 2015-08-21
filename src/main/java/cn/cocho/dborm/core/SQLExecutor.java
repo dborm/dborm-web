@@ -14,7 +14,7 @@ import java.util.List;
  * @author KEQIAO KEJI
  * @time 2013-5-6上午10:40:40
  */
-public class SQLExcuter {
+public class SQLExecutor {
 
     /**
      * 执行SQL(并作SQL检查及输出)
@@ -26,7 +26,7 @@ public class SQLExcuter {
      * @author KEQIAO KEJI
      * @time 2013-6-7下午2:54:48
      */
-    public static void execSQL(String sql, Object[] bindArgs, Connection conn) throws SQLException {
+    public void execSQL(String sql, Object[] bindArgs, Connection conn) throws SQLException {
         checkSql(sql, bindArgs);
         PreparedStatement pst = null;
         try {
@@ -53,7 +53,7 @@ public class SQLExcuter {
      * @author KEQIAO KEJI
      * @time 2013-5-6上午10:41:26
      */
-    public static void execSQLUseTransaction(List<PairDborm<String, Object[]>> execSqlPairList, Connection conn) throws SQLException {
+    public void execSQLUseTransaction(List<PairDborm<String, Object[]>> execSqlPairList, Connection conn) throws SQLException {
         PreparedStatement pst = null;
         try {
             conn.setAutoCommit(false);
@@ -89,7 +89,7 @@ public class SQLExcuter {
      * @author KEQIAO KEJI
      * @time 2013-5-6上午10:43:44
      */
-    public static ResultSet getResultSet(String sql, Object[] bindArgs, Connection conn) throws SQLException {
+    public ResultSet getResultSet(String sql, Object[] bindArgs, Connection conn) throws SQLException {
         ResultSet result;
         checkSql(sql, bindArgs);
         PreparedStatement pst = conn.prepareStatement(sql);
@@ -111,8 +111,8 @@ public class SQLExcuter {
      * @author KEQIAO KEJI
      * @time 2013-5-7上午10:55:38
      */
-    private static void checkSql(String sql, Object[] bindArgs) {
-        if (StringUtilsDborm.isNotBlank(sql)) {
+    private void checkSql(String sql, Object[] bindArgs) {
+        if (new StringUtilsDborm().isNotBlank(sql)) {
             if (DbormContexts.showSql) {
                 StringBuilder sqlContent = new StringBuilder("运行的SQL语句如下：\n");
                 sqlContent.append(sql);
@@ -126,7 +126,7 @@ public class SQLExcuter {
                         }
                     }
                 }
-                LoggerUtilsDborm.debug(sqlContent.toString());
+                new LoggerUtilsDborm().debug(sqlContent.toString());
             }
         } else {
             throw new IllegalArgumentException("需要执行的SQL语句不能为空!");

@@ -2,6 +2,8 @@ package cn.cocho.dborm.test.query;
 
 import cn.cocho.dborm.core.Dborm;
 import cn.cocho.dborm.test.utils.BaseTest;
+import cn.cocho.dborm.test.utils.DBLogger;
+import cn.cocho.dborm.test.utils.DataBaseManager;
 import cn.cocho.dborm.test.utils.domain.LoginUser;
 import cn.cocho.dborm.test.utils.domain.QsmOption;
 import org.junit.AfterClass;
@@ -22,8 +24,11 @@ public class SelectRelationTest extends BaseTest {
 
     private final static String QSM_CONTENT = "测试内容";
 
+    static Dborm dborm;
+
     @BeforeClass
     public static void testA10initData() {
+        dborm = new Dborm(new DataBaseManager(), new DBLogger());
         LoginUser user = new LoginUser();
         user.setId("dsfdsfsdafdsfds2343sdfsdf");
         user.setUserId(USER_ID);
@@ -42,7 +47,7 @@ public class SelectRelationTest extends BaseTest {
         }
         user.setQsmOptionList(qsmOptionList);
 
-        boolean result = Dborm.insert(user);
+        boolean result = dborm.insert(user);
         assertEquals(true, result);
     }
 
@@ -57,7 +62,7 @@ public class SelectRelationTest extends BaseTest {
         String sql = "SELECT u.*, q.question_id, q.content FROM qsm_option q LEFT JOIN login_user u ON u.user_id=q.user_id WHERE u.user_id = ? ";
         String[] bindArgs = new String[]{USER_ID};
         // LoginUser对象里面一定要有questionId和content属性
-        List<LoginUser> userList = Dborm.getEntities(sql, bindArgs, LoginUser.class);
+        List<LoginUser> userList = dborm.getEntities(sql, bindArgs, LoginUser.class);
         for (int i = 0; i < bindArgs.length; i++) {
             LoginUser user = userList.get(i);
             assertEquals(USER_NAME, user.getUserName());
@@ -69,7 +74,7 @@ public class SelectRelationTest extends BaseTest {
     public void testB28GetJoinEntitys() {
         String sql = "SELECT * FROM qsm_option q LEFT JOIN login_user u ON u.user_id=q.user_id WHERE u.user_id = ? ";
         String[] bindArgs = new String[]{USER_ID};
-        List<Map<String, Object>> entityList = Dborm.getEntities(sql, bindArgs, new Class<?>[]{LoginUser.class, QsmOption.class});
+        List<Map<String, Object>> entityList = dborm.getEntities(sql, bindArgs, new Class<?>[]{LoginUser.class, QsmOption.class});
         for (int i = 0; i < bindArgs.length; i++) {
             Map<String, Object> entityTeam = entityList.get(i);
             LoginUser user = (LoginUser) entityTeam.get(LoginUser.class.getName());

@@ -15,32 +15,34 @@ import java.util.Set;
  */
 public class SQLTranslater {
 
+    StringUtilsDborm stringUtils = new StringUtilsDborm();
+
     /**
      * 解析出实体类的新增SQL语句
      *
      * @param entityClass 实体类
      * @return 新增SQL语句
      */
-    public static String getInsertSql(Class<?> entityClass) {
+    public String getInsertSql(Class<?> entityClass) {
         // 例如： INSERT INTO users(user_Id, username) VALUES (?,?) ;
         String sql;
         StringBuilder sqlContent = new StringBuilder("INSERT INTO ");
-        String tableName = Cache.getTablesCache(entityClass).getTableName();
+        String tableName = CacheDborm.getCache().getTablesCache(entityClass).getTableName();
         sqlContent.append(tableName);
         sqlContent.append(" (");
         StringBuilder columnName = new StringBuilder();
         StringBuilder columnValue = new StringBuilder();
 
-        Map<String, Field> fields = Cache.getEntityColumnFieldsCache(entityClass);
+        Map<String, Field> fields = CacheDborm.getCache().getEntityColumnFieldsCache(entityClass);
         Set<Entry<String, Field>> entrySet = fields.entrySet();
         for (Entry<String, Field> entry : entrySet) {
             columnName.append(entry.getKey());
             columnName.append(", ");
             columnValue.append("?, ");
         }
-        sqlContent.append(StringUtilsDborm.cutLastSign(columnName.toString(), ", "));
+        sqlContent.append(stringUtils.cutLastSign(columnName.toString(), ", "));
         sqlContent.append(") VALUES (");
-        sqlContent.append(StringUtilsDborm.cutLastSign(columnValue.toString(), ", "));
+        sqlContent.append(stringUtils.cutLastSign(columnValue.toString(), ", "));
         sqlContent.append(")");
         sql = sqlContent.toString();
 
@@ -53,11 +55,11 @@ public class SQLTranslater {
      * @param entityClass 实体类
      * @return 删除SQL语句
      */
-    public static String getDeleteSql(Class<?> entityClass) {
+    public String getDeleteSql(Class<?> entityClass) {
         // 例如： DELETE FROM users WHERE user_id=?;
         String sql;
         StringBuilder sqlContent = new StringBuilder("DELETE FROM ");
-        String tableName = Cache.getTablesCache(entityClass).getTableName();
+        String tableName = CacheDborm.getCache().getTablesCache(entityClass).getTableName();
         sqlContent.append(tableName);
         sqlContent.append(" WHERE ");
         sqlContent.append(parsePrimaryKeyWhere(entityClass));
@@ -71,23 +73,23 @@ public class SQLTranslater {
      * @param entityClass 实体类
      * @return 修改SQL语句
      */
-    public static String getUpdateSql(Class<?> entityClass) {
+    public String getUpdateSql(Class<?> entityClass) {
         // 例如： UPDATE users SET user_id=?, user_name=?, user_age=? WHERE user_id=?;
         String sql;
         StringBuilder sqlContent;
         sqlContent = new StringBuilder("UPDATE ");
-        String tableName = Cache.getTablesCache(entityClass).getTableName();
+        String tableName = CacheDborm.getCache().getTablesCache(entityClass).getTableName();
         sqlContent.append(tableName);
         sqlContent.append(" SET ");
         StringBuilder columnName = new StringBuilder();
 
-        Map<String, Field> columnFields = Cache.getEntityColumnFieldsCache(entityClass);
+        Map<String, Field> columnFields = CacheDborm.getCache().getEntityColumnFieldsCache(entityClass);
         Set<Entry<String, Field>> entrySet = columnFields.entrySet();
         for (Entry<String, Field> entry : entrySet) {
             columnName.append(entry.getKey());
             columnName.append("=?, ");
         }
-        sqlContent.append(StringUtilsDborm.cutLastSign(columnName.toString(), ", "));
+        sqlContent.append(stringUtils.cutLastSign(columnName.toString(), ", "));
         sqlContent.append(" WHERE ");
         sqlContent.append(parsePrimaryKeyWhere(entityClass));
         sql = sqlContent.toString();
@@ -100,16 +102,16 @@ public class SQLTranslater {
      * @param entityClass 实体类
      * @return where条件后面的主键SQL语句
      */
-    public static String parsePrimaryKeyWhere(Class<?> entityClass) {
+    public String parsePrimaryKeyWhere(Class<?> entityClass) {
         StringBuilder sqlContent = new StringBuilder();
-        Map<String, Field> fields = Cache.getEntityPrimaryKeyFieldsCache(entityClass);
+        Map<String, Field> fields = CacheDborm.getCache().getEntityPrimaryKeyFieldsCache(entityClass);
         Set<Entry<String, Field>> entrySet = fields.entrySet();
         for (Entry<String, Field> entry : entrySet) {
             sqlContent.append(entry.getKey());
             sqlContent.append("=? and ");
 
         }
-        return StringUtilsDborm.cutLastSign(sqlContent.toString(), "and ");
+        return stringUtils.cutLastSign(sqlContent.toString(), "and ");
     }
 
 }

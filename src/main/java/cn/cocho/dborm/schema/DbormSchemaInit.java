@@ -27,6 +27,9 @@ import java.util.*;
  */
 public class DbormSchemaInit {
 
+    StringUtilsDborm stringUtils = new StringUtilsDborm();
+    LoggerUtilsDborm loggerUtils = new LoggerUtilsDborm();
+
     private String schemaPath;
 
     /**
@@ -71,11 +74,11 @@ public class DbormSchemaInit {
             DocumentBuilder builder = factory.newDocumentBuilder();
             document = builder.parse(inputStream);
         } catch (ParserConfigurationException e) {
-            LoggerUtilsDborm.error(DbormSchemaInit.class.getName(), e);
+            loggerUtils.error(DbormSchemaInit.class.getName(), e);
         } catch (SAXException e) {
-            LoggerUtilsDborm.error(DbormSchemaInit.class.getName(), e);
+            loggerUtils.error(DbormSchemaInit.class.getName(), e);
         } catch (IOException e) {
-            LoggerUtilsDborm.error(DbormSchemaInit.class.getName(), e);
+            loggerUtils.error(DbormSchemaInit.class.getName(), e);
         }
         if (document != null) {
             Element root = document.getDocumentElement();// 获得根元素
@@ -86,7 +89,7 @@ public class DbormSchemaInit {
                 String name = getStringAttributeValue(table, SchemaConstants.TABLE_NAME);
                 if (name == null) {
                     String className = classPath.substring(classPath.lastIndexOf("\\."));
-                    StringUtilsDborm.humpToUnderlineName(className);
+                    stringUtils.humpToUnderlineName(className);
                 }
                 TableBean tableDomain = new TableBean();
                 tableDomain.setClassPath(classPath);
@@ -118,7 +121,7 @@ public class DbormSchemaInit {
             columnDomain.setFieldName(fieldName);
             columnDomain.setPrimaryKey(getBooleanAttributeValue(column, SchemaConstants.COLUMN_IS_PRIMARY_KEY));
             columnDomain.setDefaultValue(getDefaultValue(column));
-            String columnName = StringUtilsDborm.humpToUnderlineName(fieldName);
+            String columnName = stringUtils.humpToUnderlineName(fieldName);
             fieldList.put(columnName, columnDomain);
         }
         return fieldList;

@@ -26,6 +26,6 @@ public class DbormContexts {
     /**
      * 日志记录工具类
      */
-    public static LoggerDborm log = null;
+    public static DbormLogger log = null;
 
 }

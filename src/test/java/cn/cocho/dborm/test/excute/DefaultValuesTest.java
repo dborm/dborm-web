@@ -2,8 +2,11 @@ package cn.cocho.dborm.test.excute;
 
 import cn.cocho.dborm.core.Dborm;
 import cn.cocho.dborm.test.utils.BaseTest;
+import cn.cocho.dborm.test.utils.DBLogger;
+import cn.cocho.dborm.test.utils.DataBaseManager;
 import cn.cocho.dborm.test.utils.domain.LoginUser;
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Date;
@@ -20,6 +23,13 @@ import static org.junit.Assert.assertEquals;
 public class DefaultValuesTest extends BaseTest {
 
 
+    static Dborm dborm;
+
+    @BeforeClass
+    public static void testA10initData() {
+        dborm = new Dborm(new DataBaseManager(), new DBLogger());
+    }
+
     @Test
     public void testB11Insert() {
         LoginUser user = new LoginUser();
@@ -28,10 +38,10 @@ public class DefaultValuesTest extends BaseTest {
         user.setUserName("Tom");
         user.setAge(10);
         user.setBirthday(new Date());
-        boolean result = Dborm.insert(user);
+        boolean result = dborm.insert(user);
         assertEquals(true, result);
 
-        List<LoginUser> userList = Dborm.getEntities("select * from login_user", null, LoginUser.class);
+        List<LoginUser> userList = dborm.getEntities("select * from login_user", null, LoginUser.class);
         LoginUser queryUser = userList.get(0);
         Integer loginNum = queryUser.getLoginNum();
         if (loginNum != null) {
@@ -44,7 +54,7 @@ public class DefaultValuesTest extends BaseTest {
 
     @AfterClass
     public static void testZ10DeleteDb() {
-        boolean delLogin = Dborm.execSql("delete from login_user");
+        boolean delLogin = dborm.execSql("delete from login_user");
         assertEquals(true, delLogin);
     }
 
