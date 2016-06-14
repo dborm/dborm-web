@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       ">
+
+
+    <!--资源文件注入开始-->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:*.properties</value>
+                <value>classpath:db/*.properties</value>
+            </list>
+        </property>
+    </bean>
+    <!--资源文件注入结束-->
+
+    <!-- 对包中的所有类进行扫描，以完成Bean创建和自动依赖注入的功能,多个包之间用英文逗号隔开 -->
+    <context:component-scan base-package="org.dborm.web.demo">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!-- 激活@Controller模式，并且指定JSON转换 -->
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="org.dborm.web.utils.MessageConverter">
+                <property name="supportedMediaTypes" value="application/json"/>
+                <property name="serializerFeature">
+                    <array>
+                        <value>QuoteFieldNames</value>
+                        <value>WriteNullListAsEmpty</value>
+                    </array>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <!--支持Jsp视图-->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!--视图响应的优先级,order值越小,优先级越高-->
+        <property name="order" value="1"/>
+        <property name="cache" value="true"/>
+        <property name="contentType" value="text/html;charset=UTF-8"/>
+        <!--jsp支持JSTL-->
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <!--请求路径的前缀-->
+        <!--<property name="prefix" value="/view"/>-->
+        <!--请求路径的后缀-->
+        <!--<property name="suffix" value=".jsp"/>-->
+        <property name="requestContextAttribute" value="request"/>
+    </bean>
+
+
+    <!--重定向（即如果当前路径是/ 则重定向到/admin/index）-->
+    <!--<mvc:view-controller path="/" view-name="forward:/admin/index"/>-->
+    <!--视图解析配置结束-->
+
+
+    <!--静态资源过滤配置开始-->
+    <!-- 方案一：静态资源映射 使spring mvc不过滤这些资源 如果不配置则无法访问-->
+    <!--<mvc:resources mapping="/resources/images/**" location="/resources/images/"/>-->
+    <!--<mvc:resources mapping="/resources/css/**" location="/resources/css/"/>-->
+    <!--<mvc:resources mapping="/resources/js/**" location="/resources/js/"/>-->
+    <!--方案二：resources内部的所有资源配置为静态资源-->
+    <!--<mvc:resources mapping="/resources/**" location="/resources/"/>-->
+    <!--方案三：使用默认的Servlet来响应静态文件-->
+    <!--<mvc:default-servlet-handler/>-->
+    <!--静态资源过滤配置结束-->
+
+
+</beans>
