@@ -26,10 +26,10 @@ CREATE TABLE `user_info` (
   `username` varchar(64) NOT NULL COMMENT '用户名',
   `password` varchar(64) DEFAULT NULL COMMENT '昵称',
   `age` int(11) DEFAULT '18' COMMENT '年龄，默认值为18',
-  `create_user_id` varchar(64) NOT NULL DEFAULT '',
+  `create_by` varchar(64) NOT NULL DEFAULT '',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `modify_user_id` varchar(64) NOT NULL DEFAULT '',
-  `modify_time` datetime DEFAULT NULL COMMENT '修改时间',
+  `update_by` varchar(64) NOT NULL DEFAULT '',
+  `update_time` datetime DEFAULT NULL COMMENT '修改时间',
   `deleted` int(11) DEFAULT '0' COMMENT '是否删除（软删除的时候使用，0：未删除  1：已删除）',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

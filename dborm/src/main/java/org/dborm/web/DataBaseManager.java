@@ -53,13 +53,13 @@ public class DataBaseManager extends DbormDataBase {
         ReflectUtilsDborm reflectUtils = new ReflectUtilsDborm();
         Map<String, Field> fields = cache.getEntityAllFieldsCache(entity.getClass());
         if (userId != null) {
-            Object createUserId = reflectUtils.getFieldValue(fields.get(DBConstants.CREATE_USER_ID), entity);
+            Object createUserId = reflectUtils.getFieldValue(fields.get(DBConstants.CREATE_BY), entity);
             if (createUserId == null) {
-                reflectUtils.setFieldValue(fields.get(DBConstants.CREATE_USER_ID), entity, userId);
+                reflectUtils.setFieldValue(fields.get(DBConstants.CREATE_BY), entity, userId);
             }
-            Object lastModifyUserId = reflectUtils.getFieldValue(fields.get(DBConstants.MODIFY_USER_ID), entity);
+            Object lastModifyUserId = reflectUtils.getFieldValue(fields.get(DBConstants.UPDATE_BY), entity);
             if (lastModifyUserId == null) {
-                reflectUtils.setFieldValue(fields.get(DBConstants.MODIFY_USER_ID), entity, userId);
+                reflectUtils.setFieldValue(fields.get(DBConstants.UPDATE_BY), entity, userId);
             }
         }
 
@@ -68,9 +68,9 @@ public class DataBaseManager extends DbormDataBase {
         if (createTime == null) {
             reflectUtils.setFieldValue(fields.get(DBConstants.CREATE_TIME), entity, currentTime);
         }
-        Object lastModifyTime = reflectUtils.getFieldValue(fields.get(DBConstants.MODIFY_TIME), entity);
+        Object lastModifyTime = reflectUtils.getFieldValue(fields.get(DBConstants.UPDATE_TIME), entity);
         if (lastModifyTime == null) {
-            reflectUtils.setFieldValue(fields.get(DBConstants.MODIFY_TIME), entity, currentTime);
+            reflectUtils.setFieldValue(fields.get(DBConstants.UPDATE_TIME), entity, currentTime);
         }
         Object id = reflectUtils.getFieldValue(fields.get(DBConstants.ID), entity);
         if (id == null) {
@@ -88,14 +88,14 @@ public class DataBaseManager extends DbormDataBase {
         ReflectUtilsDborm reflectUtils = new ReflectUtilsDborm();
         Map<String, Field> fields = cache.getEntityAllFieldsCache(entity.getClass());
         if (userId != null) {
-            Object lastModifyUserId = reflectUtils.getFieldValue(fields.get(DBConstants.MODIFY_USER_ID), entity);
+            Object lastModifyUserId = reflectUtils.getFieldValue(fields.get(DBConstants.UPDATE_BY), entity);
             if (lastModifyUserId == null) {
-                reflectUtils.setFieldValue(fields.get(DBConstants.MODIFY_USER_ID), entity, userId);
+                reflectUtils.setFieldValue(fields.get(DBConstants.UPDATE_BY), entity, userId);
             }
         }
-        Object lastModifyTime = reflectUtils.getFieldValue(fields.get(DBConstants.MODIFY_TIME), entity);
+        Object lastModifyTime = reflectUtils.getFieldValue(fields.get(DBConstants.UPDATE_TIME), entity);
         if (lastModifyTime == null) {
-            reflectUtils.setFieldValue(fields.get(DBConstants.MODIFY_TIME), entity, new Date());
+            reflectUtils.setFieldValue(fields.get(DBConstants.UPDATE_TIME), entity, new Date());
         }
         return entity;
     }
