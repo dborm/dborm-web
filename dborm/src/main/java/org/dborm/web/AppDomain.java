@@ -20,18 +20,18 @@ public class AppDomain extends BaseDomain {
     private String id;
 
     @Column
-    private String createUserId;
+    private String createBy;
 
     @Column
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date createTime;
 
     @Column
-    private String modifyUserId;
+    private String updateBy;
 
     @Column
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date modifyTime;
+    private Date updateTime;
 
 
     @Column(defaultValue = "0")
@@ -45,12 +45,12 @@ public class AppDomain extends BaseDomain {
         this.id = id;
     }
 
-    public String getCreateUserId() {
-        return createUserId;
+    public String getCreateBy() {
+        return createBy;
     }
 
-    public void setCreateUserId(String createUserId) {
-        this.createUserId = createUserId;
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
     }
 
     public Date getCreateTime() {
@@ -61,20 +61,20 @@ public class AppDomain extends BaseDomain {
         this.createTime = createTime;
     }
 
-    public String getModifyUserId() {
-        return modifyUserId;
+    public String getUpdateBy() {
+        return updateBy;
     }
 
-    public void setModifyUserId(String modifyUserId) {
-        this.modifyUserId = modifyUserId;
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
     }
 
-    public Date getModifyTime() {
-        return modifyTime;
+    public Date getUpdateTime() {
+        return updateTime;
     }
 
-    public void setModifyTime(Date modifyTime) {
-        this.modifyTime = modifyTime;
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 
     public Integer getDeleted() {

@@ -14,7 +14,7 @@
         <dependency>
             <groupId>org.dborm.web</groupId>
             <artifactId>dborm-web</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <!--Dborm相关的依赖结束-->
 

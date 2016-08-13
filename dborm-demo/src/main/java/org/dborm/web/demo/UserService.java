@@ -23,7 +23,7 @@ public class UserService {
             sql.append(" AND username LIKE ?");
             args.add("%" + userInfo.getUsername() + "%");
         }
-        sql.append(" ORDER BY modify_time DESC");
+        sql.append(" ORDER BY update_time DESC");
         return dborm.getEntities(UserInfo.class, sql.toString(), args);
     }
 
