@@ -5,37 +5,38 @@ import org.dborm.core.annotation.Column;
 import org.dborm.core.domain.BaseDomain;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * 抽取表中的公共字段
  * Created by shk
  */
-public class AppDomain extends BaseDomain {
+public class AppDomain extends BaseDomain implements Serializable {
 
     /**
      * 表的主键ID（每个表尽可能都有主键,而且最好主键字段的名字是相同的）
      */
     @Column(isPrimaryKey = true)
-    private String id;
+    String id;
 
     @Column
-    private String createBy;
-
-    @Column
-    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date createTime;
-
-    @Column
-    private String updateBy;
+    String createBy;
 
     @Column
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date updateTime;
+    Date createTime;
+
+    @Column
+    String updateBy;
+
+    @Column
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    Date updateTime;
 
 
     @Column(defaultValue = "0")
-    private Integer deleted;
+    Integer deleted;
 
     public String getId() {
         return id;
