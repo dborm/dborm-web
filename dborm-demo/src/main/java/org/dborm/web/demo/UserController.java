@@ -48,4 +48,17 @@ public class UserController {
     }
 
 
+    @ResponseBody
+    @RequestMapping(value = "/transactional")
+    public String test(){
+        try {
+            userService.transactional();
+        }catch (Exception e){
+            e.printStackTrace();
+            return "事务执行";
+        }
+        return "测试事务";
+
+    }
+
 }

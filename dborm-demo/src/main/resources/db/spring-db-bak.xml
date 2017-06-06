@@ -45,48 +45,38 @@
         <property name="idleConnectionTestPeriod" value="${c3p0.idleConnectionTestPeriod}"/>
     </bean>
     <!-- 使用spring注入数据源的配置结束 -->
+
+
+    <!-- 据库相关的配置信息开始 -->
     <!--数据库事务注入-->
     <!--<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">-->
         <!--<property name="dataSource" ref="dataSource"/>-->
     <!--</bean>-->
 
 
-    <bean id="dataSourceJDBC" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="${jdbc.url}"/>
-        <property name="username" value="root"/>
-        <property name="password" value=""/>
+
+
+    <bean name="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
     </bean>
 
 
+    <!--  声明式容器事务管理 ,transaction-manager指定事务管理器为transactionManager -->
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+        <tx:attributes>
+            <tx:method name="transactional*" propagation="REQUIRED" />
+            <tx:method name="*" read-only="true" />
+        </tx:attributes>
+    </tx:advice>
 
-    <bean id="transactionManager" name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSourceJDBC"></property>
-    </bean>
-
-
-    <!-- 用注解来实现事务管理 -->
-    <tx:annotation-driven transaction-manager="transactionManager"/>
-    <!--<tx:annotation-driven/>-->
-
-
-
-    <!--&lt;!&ndash;  声明式容器事务管理 ,transaction-manager指定事务管理器为transactionManager &ndash;&gt;-->
-    <!--<tx:advice id="txAdvice" transaction-manager="txManager">-->
-    <!--<tx:attributes>-->
-    <!--<tx:method name="transactional*" propagation="REQUIRED" />-->
-    <!--<tx:method name="*" read-only="true" />-->
-    <!--</tx:attributes>-->
-    <!--</tx:advice>-->
-
-    <!--<aop:config expose-proxy="true">-->
-    <!--&lt;!&ndash; 只对业务逻辑层实施事务 &ndash;&gt;-->
-    <!--<aop:pointcut id="txPointcut" expression="execution(* org.dborm.web.demo.*.*(..))" />-->
-    <!--&lt;!&ndash; Advisor定义，切入点和通知分别为txPointcut、txAdvice &ndash;&gt;-->
-    <!--<aop:advisor pointcut-ref="txPointcut" advice-ref="txAdvice"/>-->
-    <!--</aop:config>-->
-    <!--<tx:annotation-driven transaction-manager="txManager"/>-->
-    <!--<context:component-scan base-package="org.dborm.web" />-->
+    <aop:config expose-proxy="true">
+        <!-- 只对业务逻辑层实施事务 -->
+        <aop:pointcut id="txPointcut" expression="execution(* org.dborm.web.demo.*.*(..))" />
+        <!-- Advisor定义，切入点和通知分别为txPointcut、txAdvice -->
+        <aop:advisor pointcut-ref="txPointcut" advice-ref="txAdvice"/>
+    </aop:config>
+    <tx:annotation-driven transaction-manager="txManager"/>
+    <context:component-scan base-package="org.dborm.web" />
 
 
     <bean id="loggerDb" class="org.dborm.web.utils.DBLogger"/>
