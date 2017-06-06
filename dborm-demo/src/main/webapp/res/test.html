@@ -1,0 +1,118 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<script src="jquery-2.2.2.min.js" type="text/javascript"></script>
+
+<div id="color">
+    颜色:
+    <input type="checkbox" name="colorName" value="red"> 红色 &nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="checkbox" name="colorName" value="yellow"> 黄色 &nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="checkbox" name="colorName" value="green"> 绿色 &nbsp;&nbsp;&nbsp;&nbsp;
+
+</div>
+<div id="size">
+    尺寸:
+    <input type="checkbox" name="sizeName" value="1"> 1寸 &nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="checkbox" name="sizeName" value="2"> 2寸 &nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="checkbox" name="sizeName" value="3"> 3寸 &nbsp;&nbsp;&nbsp;&nbsp;
+</div>
+<div id="address">
+    仓库:
+    <input type="checkbox" name="addressName" value="shanghai"> 上海 &nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="checkbox" name="addressName" value="beijing"> 北京 &nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="checkbox" name="addressName" value="guanzhou"> 广州 &nbsp;&nbsp;&nbsp;&nbsp;
+</div>
+
+<table id="skuTable" border="1" cellspacing="0" cellpadding="0">
+</table>
+
+<script>
+    initTable();
+    //    initTable2();
+    function initTable() {
+        var trHtml = "";
+//        var colors = $('#color').children();
+        for (var i = 0; i < 2; i++) {
+            var colorElement = $('#color').children().eq(i);
+            for (var k = 0; k < 2; k++) {
+                var sizeElement = $('#size').children().eq(k);
+                for (var c = 0; c < 2; c++) {
+                    var addressElement = $('#address').children().eq(c);
+                    trHtml += "<tr id=''>";
+                    trHtml += "<td>" + colorElement.val() + "</td>";
+                    trHtml += "<td>" + sizeElement.val() + "</td>";
+                    trHtml += "<td>" + addressElement.val() + "</td>";
+                    trHtml += "</tr>";
+                }
+            }
+        }
+        $("#skuTable").append(trHtml);
+    }
+
+    function initTable2() {
+        var tableHtml;
+        for (var i = 0; i < 9; i++) {
+            tableHtml += "<tr>";
+            var tdHtml = "";
+
+            for (var k = 0; k < 2; k++) {
+                var colorElement = $('#color').children().eq(parseInt(i / 3));
+                tdHtml += "<td>" + colorElement.val() + "</td>";
+            }
+
+
+//            var colorElement = $('#color').children().eq(parseInt(i/3));
+//            tdHtml += "<td>" + colorElement.val() + "</td>";
+//
+//            var sizeElement = $('#size').children().eq(parseInt(i%3));
+//            tdHtml += "<td>" + sizeElement.val() + "</td>";
+
+            tableHtml += tdHtml;
+            tableHtml += "</tr>";
+        }
+        $("#skuTable").append(tableHtml);
+    }
+
+    arrayDemo();
+    function arrayDemo() {
+        var colors = ["red", "yellow", "green"];
+        var sizes = ["1", "2"];
+        var addresses = ["上海", "北京"];
+        var datas = [colors, sizes, addresses];
+
+        var trs = [];
+        var trss = [];
+        for (var i = 0; i < datas.length; i++) {
+            var types = datas[i];
+            if (trss.length > 0) {
+//                trs.splice(0,trs.length);
+//                trs = trss.slice();
+                trs = [];
+                for (var y = 0; y < trss.length; y++) {
+                    trs.push(trss[y]);
+                }
+            }
+            trss = [];
+            for (var k = 0; k < types.length; k++) {
+                if (i == 0) {
+                    var type = types[k];
+                    trs.push(type);
+                } else {
+                    for (var x = 0; x < trs.length; x++) {
+                        var tr = trs[x] + " - " + types[k];
+                        trss.push(tr);
+                    }
+                }
+            }
+        }
+
+        for (var i = 0; i < trss.length; i++) {
+            console.log(trss[i]);
+
+        }
+
+    }
+
+
+</script>
+</html>
+
